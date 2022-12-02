@@ -1,0 +1,29 @@
+.sidebar_tabs {
+  .sidebar_tab {
+    display: flex;
+    text-decoration: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    color: var(--black);
+    transition: background ease-in-out 200ms;
+
+    &:hover {
+      background-color: var(--gray);
+    }
+
+    .sidebar_icon {
+      font-size: 24px;
+    }
+
+    .sidebar_title {
+      font-weight: 700;
+      line-height: 25px;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+  }
+
+  .sidebar_active {
+    color: var(--red);
+  }
+}

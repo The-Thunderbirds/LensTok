@@ -1,0 +1,214 @@
+.login_form {
+  .box {
+    float: left;
+    padding: 60px 50px 40px 50px;
+  }
+
+  .title {
+    width: 100%;
+    float: left;
+    line-height: 46px;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ed2553;
+    position: relative;
+
+    &:before {
+      content: "";
+      width: 5px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: -50px;
+      background: #ed2553;
+    }
+  }
+
+  .input {
+    width: 100%;
+    float: left;
+
+    label,
+    input {
+      width: 100%;
+      float: left;
+    }
+  }
+
+  .button {
+    width: 100%;
+    float: left;
+
+    button {
+      width: 100%;
+      float: left;
+    }
+  }
+
+  .input,
+  .button {
+    margin-top: 30px;
+    height: 70px;
+  }
+
+  .input {
+    position: relative;
+
+    input {
+      position: relative;
+    }
+  }
+
+  .button {
+    position: relative;
+
+    button {
+      position: relative;
+    }
+  }
+
+  .input {
+    input {
+      padding-left: 10px;
+      height: 60px;
+      top: 10px;
+      border: none;
+      background: transparent;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 20px;
+      color: rgba(0, 0, 0, 0.8);
+    }
+
+    label {
+      font-family: "Roboto", sans-serif;
+      font-size: 24px;
+      color: rgba(0, 0, 0, 0.8);
+      font-weight: 300;
+    }
+  }
+
+  .button button {
+    font-family: "Roboto", sans-serif;
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 300;
+  }
+
+  .input {
+    &:before {
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    &:before {
+      content: "";
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 3;
+    }
+  }
+
+  .input label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
+    line-height: 60px;
+  }
+
+  .button {
+    &.login {
+      width: 60%;
+      left: 20%;
+
+      button {
+        width: 100%;
+        line-height: 64px;
+        left: 0%;
+        background-color: transparent;
+        border: 3px solid rgba(0, 0, 0, 0.1);
+        font-weight: 900;
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    button {
+      width: 100%;
+      line-height: 64px;
+      left: 0%;
+      background-color: transparent;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      font-weight: 900;
+      font-size: 18px;
+      color: rgba(0, 0, 0, 0.2);
+    }
+
+    &.login {
+      margin-top: 30px;
+    }
+
+    margin-top: 20px;
+
+    button {
+      color: #ed2553;
+      border: none;
+    }
+
+    &.login button {
+      &.active {
+        border: 3px solid transparent;
+        color: #fff !important;
+
+        span {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+
+      &:hover {
+        color: #ed2553;
+        border-color: #ed2553;
+      }
+    }
+
+    margin: 40px 0;
+    overflow: hidden;
+    z-index: 2;
+
+    button {
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  // .pass-forgot {
+  //   width: 100%;
+  //   float: left;
+  //   text-align: center;
+  //   color: rgba(0, 0, 0, 0.4);
+  //   font-size: 18px;
+  //   position: absolute;
+  //   top: 100px;
+  //   right: 100px;
+  // }
+
+  .materialContainer {
+    max-width: 460px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  input {
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #fff inset;
+    }
+  }
+}

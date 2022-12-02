@@ -1,0 +1,51 @@
+.account_item {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  padding-right: 120px;
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--gray);
+  }
+
+  .account_item_avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .account_item_info {
+    font-family: "IBM Plex Sans", ProximaNova, Arial, Tahoma, PingFangSC,
+      sans-serif;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 260px;
+
+    .account_item_username {
+      span {
+        color: rgb(22, 24, 35);
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 22px;
+        max-width: 260px;
+      }
+    }
+
+    .account_item_name {
+      color: rgba(22, 24, 35, 0.75);
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 15px;
+    }
+  }
+
+  .verify_author {
+    margin-left: 4px;
+  }
+}
