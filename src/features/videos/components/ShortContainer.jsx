@@ -1,20 +1,37 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Short from "./Short";
-import data from "../data/data.json";
-import './Short.css'
+
+import { useApolloProvider } from "~/context/ApolloContext";
+
 function ShortContainer() {
   const shortContainerRef = useRef();
+
+  const { explorePublications } = useApolloProvider();
+
+  const [publications, setPublications] = useState([]);
+
+  useEffect(() => {
+    fetchPublications();
+  }, []);
+
+  async function fetchPublications() {
+    let response = await explorePublications();
+    let items = response.data.explorePublications.items;
+    setPublications(items);
+  }
 
   return (
     <>
       <section ref={shortContainerRef} className="short-container">
-        {data.map((short) => (
-          <Short
-            key={short.id}
-            shortContainerRef={shortContainerRef}
-            short={short}
-          />
-        ))}
+        {publications.length != 0 &&
+          publications.map((short) => (
+            <Short
+              key={short.id}
+              shortContainerRef={shortContainerRef}
+              short={short}
+            />
+          ))
+        }
       </section>
 
       <div className="navigation-container">

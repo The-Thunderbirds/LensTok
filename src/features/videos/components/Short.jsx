@@ -1,14 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import './Short.css'
+
+import { useWalletProvider } from "~/context/WalletProvider";
+import { useApolloProvider } from "~/context/ApolloContext";
+
 function Short({ short, shortContainerRef }) {
+
+  const { account } = useWalletProvider();
+  const { 
+    createFollowTypedData, 
+    followWithSig, 
+    doesFollow, 
+    createCollectTypedData,
+    collectWithSig
+  } = useApolloProvider();
+
   const playPauseRef = useRef();
   const videoRef = useRef();
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-  const [isLiked, setIsLiked] = useState(short.reaction.isLiked);
+  const [isLiked, setIsLiked] = useState(false);
+  const [followedByMe, setFollowedByMe] = useState(false);
+
+  const [videoUrl, setVideoUrl] = useState("");
 
   useEffect(() => {
+    const video = short.metadata.media[0].original.url;
+    setVideoUrl(video);
+
     shortContainerRef.current.addEventListener("scroll", handleVideo);
     setIsPlaying(!videoRef.current.paused);
     setIsMuted(videoRef.current.muted);
@@ -44,6 +63,44 @@ function Short({ short, shortContainerRef }) {
     }
   }
 
+  async function follow() {
+    const isFollowing = await checkIsFollowing();
+    if(isFollowing) return;
+
+    let followRequestInfo = {
+      follow: [{ profile: short.profile.id, followModule: null }],
+    };
+
+    let response = await createFollowTypedData(followRequestInfo);
+    let typedData = response.data.createFollowTypedData.typedData;
+    await followWithSig(typedData);
+    setFollowedByMe(true);
+  }
+
+  async function checkIsFollowing() {
+    let followInfo = [
+      {
+        followerAddress: account,
+        profileId: short.profile.id,
+      },
+    ];
+    let response = await doesFollow(followInfo);
+    const following = response.data.doesFollow[0].follows;
+    setFollowedByMe(following);
+    console.log(following);
+    return following
+  }
+
+	async function collect() {
+		let collectTypedDataRequest = {
+			publicationId: short.id,
+		};
+		let response = await createCollectTypedData(collectTypedDataRequest);
+    console.log(response.data);
+		let typedData = response.data.createCollectTypedData.typedData;
+		await collectWithSig(typedData);
+	}
+
   return (
     <div className="reel">
       <div className="reel-video">
@@ -63,7 +120,7 @@ function Short({ short, shortContainerRef }) {
             disableRemotePlayback
             playsInline
             loop
-            src={short.videoUrl}
+            src={videoUrl}
           ></video>
           {/* </div> */}
           <div className="controls">
@@ -104,13 +161,24 @@ function Short({ short, shortContainerRef }) {
             <ion-icon name="play-outline"></ion-icon>
           </div>
           <div className="foot">
-            <div className="title">{short.title}</div>
+            <div className="title">{short?.metadata?.name}</div>
+            <div className="description">{short?.metadata?.description}</div>
             <div className="user-info">
               <div>
-                <img src={short.profileUrl} alt="" />
-                <span>{short.username}</span>
+                <img src={short?.profile?.picture?.original?.url} alt="" />
+                <span>
+                  <div>
+                    {short?.profile?.handle}
+                  </div>
+                  <div className="follower-count">
+                    {short?.profile?.stats?.totalFollowers} followers
+                  </div>
+                </span>
               </div>
-              {!short.isFollowed && <button>Follow</button>}
+              {followedByMe ? 
+                <button>Following</button> :
+                <button onClick={follow}>Follow</button>
+              }
             </div>
           </div>
         </div>
@@ -130,15 +198,14 @@ function Short({ short, shortContainerRef }) {
                 <ion-icon name="heart-outline"></ion-icon>
               </span>
             )}
-
-            <span className="value">{short.reaction.likes}</span>
+            {/* <span className="value">{short?.reaction?.likes}</span> */}
           </div>
           <div>
             <ion-icon name="chatbubble-outline"></ion-icon>
-            <span className="value">{short.reaction.comments}</span>
+            <span className="value">{short?.stats?.totalAmountOfComments}</span>
           </div>
           <div>
-            <ion-icon name="arrow-redo-outline"></ion-icon>
+            <ion-icon name="layers-outline" onClick={collect}></ion-icon>
           </div>
           <div>
             <ion-icon name="ellipsis-vertical-outline"></ion-icon>
