@@ -7,6 +7,8 @@ import {
   HttpLink,
 } from "@apollo/client";
 import fetch from "cross-fetch";
+import omitDeep from "omit-deep";
+import { utils, ethers } from "ethers";
 
 import { useWalletProvider } from "./WalletProvider";
 
@@ -20,11 +22,18 @@ import {
   HAS_TX_BEEN_INDEXED,
   CREATE_POST_TYPED_DATA,
   GET_PUBLICATION,
-  CREATE_PROFILE
-} from "../graphql";
+  CREATE_PROFILE,
+  CREATE_FOLLOW_TYPED_DATA,
+  DOES_FOLLOW,
+  CREATE_COLLECT_TYPED_DATA,
+} from "~/graphql";
+
+import { LENS_HUB_ABI } from "~/abi/LensHub";
 
 // const API_URL = 'https://api.lens.dev'
 const API_URL = 'https://api-mumbai.lens.dev/'
+
+const LENS_HUB_ADDR = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82"
 
 export const ApolloContext = React.createContext();
 
@@ -46,6 +55,7 @@ const authLink = new ApolloLink((operation, forward) => {
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : "",
+        // "x-access-token": token ? `Bearer ${token}` : "",
       }
     });
   }
@@ -172,10 +182,8 @@ function ApolloContextProvider({ children }) {
 
   async function login() {
     let authenticationToken = localStorage.getItem("lensAPIAccessToken");
-    console.log(authenticationToken);
     if (authenticationToken) {
       let isAuthenticated = (await verify(authenticationToken)).data.verify;
-      console.log(isAuthenticated);
       if (!isAuthenticated) {
         await signChallenge(account);
       }
@@ -183,6 +191,15 @@ function ApolloContextProvider({ children }) {
       await signChallenge(account);
     }
   }
+
+  async function signedTypeData(domain, types, value) {
+		const signer = await wallet.getSigner();
+		return signer._signTypedData(
+			omitDeep(domain, "__typename"),
+			omitDeep(types, "__typename"),
+			omitDeep(value, "__typename")
+		);
+	}
 
   async function getProfilesByProfileIds(request) {
     const response = await getProfilesRequest(request);
@@ -270,6 +287,44 @@ function ApolloContextProvider({ children }) {
     });
   }
 
+	async function postWithSig(typedData) {
+    // console.log(typedData);
+
+    const signature = await signedTypeData(
+			typedData.domain,
+			typedData.types,
+			typedData.value
+		);
+
+		// console.log("create post: signature", signature);
+
+		const { v, r, s } = utils.splitSignature(signature);
+		const signer = await wallet.getSigner();
+		const lensHub = new ethers.Contract(
+			LENS_HUB_ADDR,
+			LENS_HUB_ABI,
+			signer
+		);
+  
+    const tx = await lensHub.postWithSig({
+      profileId: typedData.value.profileId,
+      contentURI: typedData.value.contentURI,
+      collectModule: typedData.value.collectModule,
+      collectModuleInitData: typedData.value.collectModuleInitData,
+      referenceModule: typedData.value.referenceModule,
+      referenceModuleInitData: typedData.value.referenceModuleInitData,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+
+    console.log(tx);
+    // console.log("create post: tx hash", tx.hash);
+	}
+
   async function explorePublications() {
     console.log("Exploring publications")
     return apolloClient.query({
@@ -307,6 +362,106 @@ function ApolloContextProvider({ children }) {
 		});
 	}
 
+	async function createFollowTypedData(followRequestInfo) {
+		console.log(followRequestInfo);
+		return apolloClient.mutate({
+			mutation: gql(CREATE_FOLLOW_TYPED_DATA),
+			variables: {
+				request: followRequestInfo,
+			},
+		});
+	}
+
+	async function followWithSig(typedData) {
+    // console.log(typedData);
+
+    const signature = await signedTypeData(
+			typedData.domain,
+			typedData.types,
+			typedData.value
+		);
+
+		// console.log("create post: signature", signature);
+
+		const { v, r, s } = utils.splitSignature(signature);
+		const signer = await wallet.getSigner();
+		const lensHub = new ethers.Contract(
+			LENS_HUB_ADDR,
+			LENS_HUB_ABI,
+			signer
+		);
+
+		const tx = await lensHub.followWithSig({
+			follower: account,
+			profileIds: typedData.value.profileIds,
+			datas: typedData.value.datas,
+			sig: {
+				v,
+				r,
+				s,
+				deadline: typedData.value.deadline,
+			},
+		});
+
+    // console.log("create post: tx hash", tx.hash);
+	}
+
+  async function doesFollow(followInfos) {
+		await login(account);
+
+    console.log(followInfos);
+
+    return apolloClient.query({
+			query: gql(DOES_FOLLOW),
+			variables: {
+				request: {
+					followInfos,
+				},
+			},
+		});
+	}
+
+	async function createCollectTypedData(createCollectTypedDataRequest) {
+		return apolloClient.mutate({
+			mutation: gql(CREATE_COLLECT_TYPED_DATA),
+			variables: {
+				request: createCollectTypedDataRequest,
+			},
+		});
+	}
+
+	async function collectWithSig(typedData) {
+		const signature = await signedTypeData(
+			typedData.domain,
+			typedData.types,
+			typedData.value
+		);
+
+		console.log("create post: signature", signature);
+
+		const { v, r, s } = utils.splitSignature(signature);
+		const signer = await wallet.getSigner();
+		const lensHub = new ethers.Contract(
+			LENS_HUB_ADDR,
+			LENS_HUB_ABI,
+			signer
+		);
+
+		const tx = await lensHub.collectWithSig({
+			collector: account,
+			profileId: typedData.value.profileId,
+			pubId: typedData.value.pubId,
+			data: typedData.value.data,
+			sig: {
+				v,
+				r,
+				s,
+				deadline: typedData.value.deadline,
+			},
+		});
+		console.log("create post: tx hash", tx.hash);
+	}
+
 
   return (
     <ApolloContext.Provider
@@ -322,9 +477,15 @@ function ApolloContextProvider({ children }) {
         hasTxBeenIndexed,
         pollUntilIndexed,
         createPostTypedData,
+        postWithSig,
         explorePublications,
         getPublication,
-        createProfile
+        createProfile,
+        createFollowTypedData,
+        followWithSig,
+        doesFollow,
+        createCollectTypedData,
+        collectWithSig
       }}>
       {children}
     </ApolloContext.Provider>
