@@ -2,33 +2,31 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import babel from "vite-plugin-babel";
 
-const webpack = require('webpack');
+import { viteCommonjs, esbuildCommonjs } from '@originjs/vite-plugin-commonjs';
 
-module.exports = function override(config) {
-    const fallback = config.resolve.fallback || {};
-    Object.assign(fallback, {
-        "crypto": require.resolve("crypto-browserify"),
-        "stream": require.resolve("stream-browserify"),
-        "assert": require.resolve("assert"),
-        "http": require.resolve("stream-http"),
-        "https": require.resolve("https-browserify"),
-        "os": require.resolve("os-browserify"),
-        "url": require.resolve("url"),
-        "process/browser": require.resolve("process/browser"),
-        "zlib": require.resolve("browserify-zlib"),
-        "path": require.resolve("path-browserify"),
-        "fs": false,
-    })
-    config.resolve.fallback = fallback;
-    config.plugins = (config.plugins || []).concat([
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-            Buffer: ['buffer', 'Buffer']
-        })
-    ])
-    return config;
-}
+import GlobalPolyFill from "@esbuild-plugins/node-globals-polyfill";
 
 export default defineConfig({
-  plugins: [react(), babel()],
+    plugins: [react(), babel(), viteCommonjs(),],
+    optimizeDeps: {
+        esbuildOptions: {
+            define: {
+                global: "globalThis",
+            },
+            plugins: [
+                GlobalPolyFill({
+                    process: true,
+                    buffer: true,
+                }),                
+            ],
+        },
+    },
+    resolve: {
+        alias: {
+            process: "process/browser",
+            stream: "stream-browserify",
+            zlib: "browserify-zlib",
+            util: "util",
+        },
+    },
 });

@@ -2,6 +2,17 @@
 <html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
+    <script>
+      window.global = window;
+    </script>
+    <script type="module">
+      import process from "process";
+      import EventEmitter from "events";
+      import {Buffer} from "buffer";
+      window.Buffer = Buffer;
+      window.process = process;
+      window.EventEmitter = EventEmitter;
+    </script>
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-QH6GQ8Y0TY"
