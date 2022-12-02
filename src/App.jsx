@@ -9,11 +9,11 @@ import { config } from "~/config";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useSelector } from "react-redux";
 import Loader from "./components/Core/Loader";
-
+import { useWalletProvider } from "~/context/WalletProvider";
 function App() {
   const location = useLocation();
   const videoDetail = location.state && location.state.videoDetail;
-  const { user } = useSelector((state) => state.user);
+  const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
 
   return (
     <div className="App">
@@ -57,7 +57,7 @@ function App() {
                 key={index}
                 element={
                   <Layout>
-                    <ProtectedRoute user={user}>
+                    <ProtectedRoute isLoggedIn={isLoggedIn}>
                       <Page />
                     </ProtectedRoute>
                   </Layout>
