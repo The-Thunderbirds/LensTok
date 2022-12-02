@@ -331,7 +331,7 @@ function ApolloContextProvider({ children }) {
       query: gql(EXPLORE_PUBLICATIONS),
       variables: {
         request: {
-          sources: ["lenstube"],
+          sources: ["tiktok"],
           sortCriteria: "LATEST",
           publicationTypes: ["POST"],
         },

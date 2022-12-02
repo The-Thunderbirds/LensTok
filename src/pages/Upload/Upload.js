@@ -2,10 +2,18 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "~/components/Core/Button";
 import { UploadIcon } from "~/components/Icons";
-import { videosService } from "~/features/videos/services/videosService";
 import styles from "./Upload.module.scss";
+import { v4 as uuidv4 } from "uuid";
+import { Web3Storage } from 'web3.storage'
+
+import { useApolloProvider } from "~/context/ApolloContext";
+
 
 function Upload() {
+  const { apolloContext, createPostTypedData, postWithSig } = useApolloProvider();
+  const { profiles, currentProfile } = apolloContext;
+  
+  
   const [filePreview, setFilePreview] = useState("");
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
@@ -18,7 +26,7 @@ function Upload() {
   };
 
   const handleUploadVideo = async (data) => {
-    await videosService.postVideo(data);
+    await handlePost();
   };
 
   const submitForm = (data) => {
@@ -39,6 +47,74 @@ function Upload() {
 
     handleUploadVideo(formData);
   };
+
+  const handlePost = async () => {
+    
+    const files = makeFileObjects();
+    const ipfsResult = await storeFiles(files);
+    console.log(ipfsResult);
+
+    const createPostRequest = {
+      profileId: profiles[currentProfile].id,
+      contentURI: `https://${ipfsResult}.ipfs.w3s.link/metadata.json`,
+      // contentURI: `ipfs://${ipfsResult}`,
+      collectModule: {
+        freeCollectModule: {
+          followerOnly: true,
+        },
+      },
+      referenceModule: {
+        followerOnlyReferenceModule: false,
+      },
+    };
+
+
+    const result = await createPostTypedData(createPostRequest);
+
+    console.log(result);
+
+    await postWithSig(result.data.createPostTypedData.typedData);
+  }
+
+  function makeFileObjects() {
+    let pubMetadata = {
+      version: "1.0.0",
+      metadata_id: uuidv4(),
+      description: caption,
+      external_url: "https://www.youtube.com/shorts/zzHe_fs4lzw",
+      name: caption,
+      attributes: [
+        {
+          displayType: "string",
+          traitType: "Title",
+          value: caption,
+        },
+      ],
+      media: [
+        {
+          item: "https://www.youtube.com/shorts/zzHe_fs4lzw",
+          type: "video/mp4",
+        },
+      ],
+      animation_url: "https://www.youtube.com/shorts/zzHe_fs4lzw",
+      appId: "tiktok",
+    };
+
+    const blob = new Blob([JSON.stringify(pubMetadata)], { type: 'application/json' })
+  
+    const files = [
+      new File([blob], "metadata.json")
+    ]
+    console.log(files);
+    return files
+  }
+
+  async function storeFiles (files) {
+    const client = new Web3Storage({ token: import.meta.env.VITE_WEB3_STORAGE })
+    const cid = await client.put(files)
+    console.log('stored files with cid:', cid)
+    return cid
+  }
 
   return (
     <form onSubmit={handleSubmit(submitForm)} className={styles.upload_wrapper}>
