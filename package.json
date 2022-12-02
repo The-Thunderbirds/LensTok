@@ -16,6 +16,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.1",
     "@biconomy/smart-account": "^0.0.2",
     "@biconomy/web3-auth": "^0.0.2",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
