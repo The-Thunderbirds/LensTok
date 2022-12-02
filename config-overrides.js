@@ -1,7 +1,3 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import babel from "vite-plugin-babel";
-
 const webpack = require('webpack');
 
 module.exports = function override(config) {
@@ -28,7 +24,3 @@ module.exports = function override(config) {
     ])
     return config;
 }
-
-export default defineConfig({
-  plugins: [react(), babel()],
-});

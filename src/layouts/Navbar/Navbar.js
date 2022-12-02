@@ -26,8 +26,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "~/features/authentication/userAction";
 import { useNavigate } from "react-router-dom";
 import WrapperAuth from "~/components/WrapperAuth";
+import ConnectWallet from "~/components/Wallet/ConnectWallet";
+import DisconnectWallet from "~/components/Wallet/DisconnectWallet";
+import { useWalletProvider } from '../../context/WalletProvider';
 
 function Navbar() {
+  const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -120,16 +124,12 @@ function Navbar() {
             </>
           ) : (
             <>
-              {isLoginPage ? (
-                <Link to={config.routes.register}>
-                  <Button primary>Register</Button>
-                </Link>
+              {isLoggedIn ? (
+                  <DisconnectWallet/>
               ) : (
-                <Link to={config.routes.login}>
-                  <Button primary>Log in</Button>
-                </Link>
+                  <ConnectWallet/>
               )}
-
+              
               <Menu items={MENU_ITEMS_1} onChange={handleMenuChange}>
                 <div>
                   <IoEllipsisVertical className={styles.dropdown_icon} />
