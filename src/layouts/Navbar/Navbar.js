@@ -77,7 +77,7 @@ function Navbar() {
       case "logout":
         dispatch(disconnect());
         break;
-      case "notif":
+      case "toProfile":
         navigate(config.routes.profileLink(user.handle));
         break;
       case "optIn":
