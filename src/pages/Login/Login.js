@@ -1,31 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import './Login.scss';
+
+import { useApolloProvider } from "~/context/ApolloContext";
+
+import { Web3Storage } from 'web3.storage'
+
 function Login() {
+	const { createProfile } = useApolloProvider();
+
   const [file , setFile] = useState('https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true');
-  const [lensHandle , setLensHandle] = useState('lenshandle');
+  const [fileUrl , setFileUrl] = useState('https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true');
+	const [handle, setHandle] = useState("");
+
+	async function createProfileRequest(ipfsUrl) {
+
+    let createProfileRequestObj = {
+			handle,
+			profilePictureUri: ipfsUrl,
+			followNFTURI: null,
+			followModule: null
+		};
+
+		let response = await createProfile(createProfileRequestObj);
+		if(response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
+			alert("Handle is already taken. Please try another handle");
+		}
+		else {
+			alert("Profile created successfully");
+		}
+	}
+
+
   const photoUpload = e =>{
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
+
+    const pfpFile = new File([file], "pfp.png");
+    setFileUrl(pfpFile);
+
     reader.onloadend = () => {
       setFile(reader.result);
     }
     reader.readAsDataURL(file);
   }
-  const editName = e =>{
-    const name = e.target.value;
-    this.setState({
-      name,
-    });
-  }
   
-  const handleSubmit= e =>{
+  const handleSubmit = async e =>{
     e.preventDefault();
-    let activeP = this.state.active === 'edit' ? 'profile' : 'edit';
-    this.setState({
-      active: activeP,
-    })
+
+    const cid = await storeFiles([fileUrl]);
+    const url = `https://${cid}.ipfs.w3s.link/pfp.png`
+    await createProfileRequest(url);  
   }
+
+
+  async function storeFiles (files) {
+    const client = new Web3Storage({ token: import.meta.env.VITE_WEB3_STORAGE })
+    const cid = await client.put(files)
+    return cid
+  }
+
+
   return (
     
     <div className="login-body">
@@ -45,7 +80,7 @@ function Login() {
     <input className="inpt" 
       id="name" 
       type="text" 
-      onChange={editName} 
+      onChange={(e) => setHandle(e.target.value)}
       maxlength="25" 
       placeholder="Your Lens Handle" 
       required/>

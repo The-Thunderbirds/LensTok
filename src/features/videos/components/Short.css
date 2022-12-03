@@ -177,8 +177,7 @@ aside footer small {
 
 .navigation-container {
   display: flex!important;
-  z-index: 99999!important;
-  height: 96vh!important;
+  height: 80vh!important;
   flex-direction: column!important;
   justify-content: space-between!important;
   padding: 1rem!important;
@@ -193,7 +192,6 @@ aside footer small {
   align-items: center!important;
   justify-content: center!important;
   font-size: 1.5rem!important;
-  background: #15161c!important;
   cursor: pointer!important;
   border-radius: 50%!important;
   backdrop-filter: blur(20px)!important;
@@ -205,7 +203,7 @@ aside footer small {
 }
 
 .nav-up {
-  margin-top: 5rem!important;
+  /* margin-top: 5rem!important; */
 }
 
 .short-container::-webkit-scrollbar {
@@ -222,8 +220,8 @@ aside footer small {
   -webkit-scroll-snap-type: y mandatory!important;
   -ms-scroll-snap-type: y mandatory!important;
   scroll-snap-type: y mandatory!important;
-  padding-top: 5rem!important;
-  scroll-padding-top: 5rem!important;
+  /* padding-top: 5rem!important; */
+  scroll-padding-bottom: 5rem!important;
 }
 
 .reel {
@@ -245,7 +243,6 @@ aside footer small {
 
 .reel ion-icon {
   cursor: pointer!important;
-  z-index: 999!important;
 }
 
 video {

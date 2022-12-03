@@ -30,9 +30,15 @@ import WrapperAuth from "~/components/WrapperAuth";
 import ConnectWallet from "~/components/Wallet/ConnectWallet";
 import DisconnectWallet from "~/components/Wallet/DisconnectWallet";
 import { useWalletProvider } from '../../context/WalletProvider';
+import { useApolloProvider } from "~/context/ApolloContext"
 
 function Navbar() {
+
+  const { apolloContext } = useApolloProvider();
+  const { profiles, currentProfile } = apolloContext;
   const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
+  
+  const [currUser, setCurrUser] = useState();
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,6 +46,12 @@ function Navbar() {
   const [theme, setTheme] = useState(localStorage.getItem("theme"));
 
   const isLoginPage = location.pathname.includes("/login");
+
+    useEffect(() => {
+      if(profiles !== undefined && profiles.length !== 0) {
+        setCurrUser(profiles[currentProfile]);
+      }  
+    }, [profiles, currentProfile]);
 
   useEffect(() => {
     const element = document.body;
