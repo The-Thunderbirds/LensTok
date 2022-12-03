@@ -11,6 +11,8 @@ import { WorldIDWidget } from "@worldcoin/id";
 import styles from "./Short.module.scss";
 import lens from "~/assets/images/lens.svg"
 
+import { sendNotificationToOne } from "~/utils/pushNotifications"
+
 function Short({ short, shortContainerRef }) {
 
   const { account } = useWalletProvider();
@@ -19,7 +21,7 @@ function Short({ short, shortContainerRef }) {
     followWithSig, 
     doesFollow, 
     createCollectTypedData,
-    collectWithSig
+    collectWithSig,
   } = useApolloProvider();
 
   const playPauseRef = useRef();
@@ -87,7 +89,7 @@ function Short({ short, shortContainerRef }) {
 
     let response = await createFollowTypedData(followRequestInfo);
     let typedData = response.data.createFollowTypedData.typedData;
-    await followWithSig(typedData);
+    await followWithSig(typedData);    
     setFollowedByMe(true);
   }
 
@@ -113,6 +115,13 @@ function Short({ short, shortContainerRef }) {
     console.log(response.data);
 		let typedData = response.data.createCollectTypedData.typedData;
 		await collectWithSig(typedData);
+
+    const title = short.metadata.name + " collected by " + account;
+    const body = "Your video has been collected by World Coin Verified address: " + account;
+    const address = short.profile.ownedBy;
+    await sendNotificationToOne(title, body, address);
+    window.alert("Video has been collected successfully");    
+    window.location.reload();
 	}
 
   function handleCollect(){
@@ -134,7 +143,7 @@ function Short({ short, shortContainerRef }) {
             actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
             signal="my_signal"
             enableTelemetry
-            onSuccess={(verificationResponse) => {
+            onSuccess={(verificationResponse) => {              
               setWcVerified(true);
             }} // you'll actually want to pass the proof to the API or your smart contract
             onError={(error) => console.error(error)}

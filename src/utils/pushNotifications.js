@@ -101,3 +101,32 @@ export const sendNotificationToAll = async (title, body) => {
       console.error('Error: ', err);
     }
   }
+
+
+  export const sendNotificationToOne = async (title, body, address) => {
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3, // target
+        identityType: 2,
+        notification: {
+          title: title,
+          body: body
+        },
+        payload: {
+          title: title,
+          body: body,
+          cta: '',
+          img: ''
+        },
+        recipients: getCAIPAddress(address), // recipient address
+        channel: getCAIPAddress(CHANNEL_ADDRESS),
+        env: 'staging'
+      });
+      
+      // apiResponse?.status === 204, if sent successfully!
+      console.log('API repsonse: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  }
