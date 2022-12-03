@@ -11,13 +11,16 @@ import {
   createReactClient,
   studioProvider,
 } from '@livepeer/react';
+import { HuddleClientProvider, getHuddleClient } from '@huddle01/huddle01-client';
 
 const client = createReactClient({
   provider: studioProvider({ apiKey: import.meta.env.VITE_LIVEPEER_API_KEY }),
 });
+const huddleClient = getHuddleClient(import.meta.env.VITE_HUDDLE_API_KEY);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <HuddleClientProvider client = {huddleClient} >
     <LivepeerConfig client={client}>
     <WalletProviderProvider>
       <ApolloContextProvider>
@@ -29,5 +32,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       </ApolloContextProvider>
     </WalletProviderProvider>
     </LivepeerConfig>
+    </HuddleClientProvider>
   </React.StrictMode>
 );
