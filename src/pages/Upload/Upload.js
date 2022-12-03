@@ -105,7 +105,7 @@ function Upload() {
 
     setPushLoading(true);
     const title = "New Video : " + name;
-    const body = "Checkout the video new!"
+    const body = "Checkout the new video!"
     await sendNotificationToAll(title, body);
     setPushLoading(false);
     window.alert("Upload has been completed succesfully");
