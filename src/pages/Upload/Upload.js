@@ -8,6 +8,7 @@ import { Web3Storage } from 'web3.storage'
 import axios from "axios";
 import Loader from "~/components/Core/Loader";
 import Livepeer from "~/assets/images/Livepeer.svg"
+import IPFS from "~/assets/images/ipfs.png"
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
@@ -24,6 +25,7 @@ function Upload() {
   const [videoURL, setVideoURL] = useState("");
   const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
+  const [ipfsLoading, setIpfsLoading] = useState(false);
 
   const handleFile = (e) => {
     setLoading(true);
@@ -94,7 +96,9 @@ function Upload() {
   };
 
   const handleUploadVideo = async () => {
+    setIpfsLoading(true);
     await handlePost();
+    setIpfsLoading(false);
   };
 
   const submitForm = (data) => {
@@ -297,16 +301,22 @@ function Upload() {
               </Button>
               <Button
                 primary
-                disabled={!file || loading}
+                disabled={!file || loading || ipfsLoading}
                 className={styles.post}
                 type="submit"
               >
-                {!loading ? 
+                {loading ? 
                 <>
                 Uploading on
                 <img src={Livepeer} width={"20px"}/>
                 </>
                 : 
+                !ipfsLoading ?
+                <>
+                Uploading on 
+                <img src={IPFS} width={"20px"}/>
+                </>
+                :
                 "Post"}
               </Button>
             </div>
