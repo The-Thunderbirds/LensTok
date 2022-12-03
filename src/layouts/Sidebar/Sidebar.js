@@ -31,10 +31,10 @@ function Sidebar() {
           <>
             <div className={styles.sidebar_login}>
               <p className={styles.login_tip}>
-                Log in to follow creators, like videos, and collect videos as NFTs.
+                Connect wallet to follow creators, like videos, and collect videos as NFTs.
               </p>
-              <Button outline large className={styles.button_login} onClick={connect}>
-                <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/9543.png" width={"30px"}></img>
+                
+              <Button outline large className={styles.button_login} onClick={connect} leftIcon={<img src="https://s2.coinmarketcap.com/static/img/coins/64x64/9543.png" style={{width:"32px", paddingRight:"5px"}}></img>}>
                 Connect Wallet
               </Button>
             </div>

@@ -24,7 +24,7 @@ function Profile() {
   const { getProfile, getPublications } = useApolloProvider();
   //combine user and loading state 
   const [profile, setProfile] = useState({ user: null, loading: true, myVideos:[] });
-
+  const [viewCollected, setViewCollected] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -130,12 +130,13 @@ function Profile() {
       </div>
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
-          <p className={styles.title}>Videos</p>
-          <p className={styles.title}>Collected</p>
+          <p className={styles.title} style = {{textDecoration: !viewCollected ? "underline" : "none"}} onClick = {() => setViewCollected(false)}>Videos</p>
+          <p className={styles.title} style = {{textDecoration: viewCollected ? "underline" : "none"}} onClick = {() => setViewCollected(true)}>Collected</p>
         </div>
         <div className={styles.list_video_container}>
           <div className={styles.list_video}>
-            {profile.myVideos && profile.myVideos.map((video) => (
+            {!viewCollected ? (
+            profile.myVideos && profile.myVideos.map((video) => (
                 <div key={video.id} className={styles.video_container}>
                   <video
                     src= {video.metadata.media[0].original.url}
@@ -149,7 +150,10 @@ function Profile() {
                     <p>{video.metadata.description}</p>
                   </div>
                 </div>
-            ))}
+            ))) : 
+              <>
+              </>
+          }
           </div>
         </div>
       </div>
