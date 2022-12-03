@@ -47,7 +47,7 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [theme, setTheme] = useState(localStorage.getItem("theme"));
-  const messages = [ // Fetch these, and store messages in state using useState
+  const messages = [
     {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
     { title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
     {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
@@ -176,6 +176,14 @@ function Navbar() {
               <div className={styles.menu_action}>
                   <FaRegCommentAlt />
                 </div>
+              </Menu>
+
+              <Menu items={MENU_ITEMS_2} onChange={handleMenuChange}>
+                <Image
+                  className={styles.dropdown_avatar}
+                  src={user.picture.original.url}
+                  alt="Avatar"
+                />
               </Menu>
             </>
           )}
