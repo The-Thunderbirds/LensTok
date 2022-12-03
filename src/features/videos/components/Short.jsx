@@ -31,6 +31,7 @@ function Short({ short, shortContainerRef }) {
     setVideoUrl(video);
 
     shortContainerRef.current.addEventListener("scroll", handleVideo);
+    if(videoRef.current !== null) {
     setIsPlaying(!videoRef.current.paused);
     setIsMuted(videoRef.current.muted);
     window.addEventListener("blur", () => {
@@ -46,9 +47,11 @@ function Short({ short, shortContainerRef }) {
         setIsPlaying(true);
       }
     });
+  }
   }, [shortContainerRef]);
 
   async function handleVideo() {
+    if(videoRef.current !== null) {
     const videoTop = videoRef.current.getBoundingClientRect().top;
 
     if (videoTop > 0 && videoTop <= 150) {
@@ -63,6 +66,7 @@ function Short({ short, shortContainerRef }) {
       videoRef.current.currentTime = 0;
       videoRef.current.pause();
     }
+  }
   }
 
   async function follow() {
@@ -111,6 +115,7 @@ function Short({ short, shortContainerRef }) {
           <video
             ref={videoRef}
             onClick={function (e) {
+              if(videoRef.current !== null) {
               if (!isPlaying) {
                 videoRef.current.play();
                 setIsPlaying(true);
@@ -118,6 +123,7 @@ function Short({ short, shortContainerRef }) {
                 videoRef.current.pause();
                 setIsPlaying(false);
               }
+            }
             }}
             disableRemotePlayback
             playsInline
@@ -128,13 +134,15 @@ function Short({ short, shortContainerRef }) {
           <div className="controls">
             <span
               onClick={() => {
-                if (!isPlaying) {
+                if(videoRef.current !== null) {
+                if (!isPlaying ) {
                   videoRef.current.play();
                   setIsPlaying(true);
                 } else {
                   videoRef.current.pause();
                   setIsPlaying(false);
                 }
+              }
               }}
             >
               <ion-icon
@@ -143,8 +151,10 @@ function Short({ short, shortContainerRef }) {
             </span>
             <span
               onClick={() => {
+                if(videoRef.current !== null) {
                 videoRef.current.muted = !isMuted;
                 setIsMuted(!isMuted);
+              }
               }}
             >
               <ion-icon
@@ -155,8 +165,10 @@ function Short({ short, shortContainerRef }) {
           <div
             ref={playPauseRef}
             onClick={() => {
+              if(videoRef.current !== null) {
               videoRef.current.play();
               setIsPlaying(true);
+              }
             }}
             className={`play-pause ${isPlaying ? "" : "show-play-pause"}`}
           >
@@ -228,8 +240,11 @@ function Short({ short, shortContainerRef }) {
 }
 
 function isActiveVideo(videoRef) {
+  if(videoRef.current !== null) {
   const videoTop = videoRef.current.getBoundingClientRect().top;
   return videoTop > 0 && videoTop <= 150;
+  }
+  return false;
 }
 
 export default Short;
