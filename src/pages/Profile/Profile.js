@@ -9,28 +9,49 @@ import Button from "~/components/Core/Button";
 import Loader from "~/components/Core/Loader";
 import WrapperAuth from "~/components/WrapperAuth";
 import handleFollowFunc from "~/utils/handleFollow";
-import { getUsersService } from "~/features/accounts/services/getUsersService";
 import { getFullName } from "~/utils/common";
 import { useSelector } from "react-redux";
 import { FaRegEdit } from "react-icons/fa";
 import { config } from "~/config";
 
+import { useApolloProvider } from "~/context/ApolloContext";
+
 function Profile() {
-  const { user: userRedux } = useSelector((state) => state.user);
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+
   const params = useParams();
   const nickname = params.nickname;
 
-  useEffect(() => {
-    const fetchApi = async () => {
-      const result = await getUsersService.user(nickname);
-      setUser(result);
-      setLoading(false);
-    };
+  const { getProfile, getPublications } = useApolloProvider();
 
-    fetchApi();
-  }, [nickname, userRedux, user.is_followed]);
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const [myVideos, setMyVideos] = useState([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      const result = await getProfile(nickname);
+      console.log(result);
+      setUser(result.data.profile);
+      setLoading(false);
+    }
+
+    fetchUser();
+  }, [nickname])
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      const result = await getPublications(user.id);
+      console.log(result);
+      setMyVideos(result.data.publications.items);
+      setLoading(false);
+    }
+
+    fetchUser();
+  }, [user])
+
 
   const handleVideoPlay = (e) => {
     e.target.play();
@@ -42,8 +63,8 @@ function Profile() {
   };
 
   const handleFollow = async () => {
-    const isFollowed = await handleFollowFunc(user);
-    setUser((user) => ({ ...user, is_followed: isFollowed }));
+    // const isFollowed = await handleFollowFunc(user);
+    // setUser((user) => ({ ...user, is_followed: isFollowed }));
   };
 
   if (loading) {
@@ -55,18 +76,17 @@ function Profile() {
       <div className={styles.header}>
         <div className={styles.info}>
           <Image
-            src={user.avatar}
+            src={user?.picture?.original?.url}
             width={116}
             height={116}
             className={styles.avatar}
           />
           <div className={styles.title_container}>
             <h2 className={styles.user_title}>
-              {user.nickname}
-              {user.tick && <Image src={Verify} className={styles.verify} />}
+              {user?.handle}
             </h2>
-            <h4 className={styles.user_fullname}>{getFullName(user)}</h4>
-            {userRedux?.id !== user?.id ? (
+            <h4 className={styles.user_fullname}>{user?.name}</h4>
+            {/* {userRedux?.id !== user?.id ? (
               <WrapperAuth>
                 <div className={styles.button_container}>
                   {user.is_followed ? (
@@ -97,33 +117,39 @@ function Profile() {
                   Edit profile
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <h2 className={styles.count_info}>
           <div className={styles.number_container}>
-            <strong>{user.followings_count}</strong>
+            <strong>{user?.stats?.totalFollowing}</strong>
             <span>Followings</span>
           </div>
           <div className={styles.number_container}>
-            <strong>{user.followers_count}</strong>
-            <span>Follower</span>
+          <strong>{user?.stats?.totalFollowers}</strong>
+            <span>Followers</span>
           </div>
           <div className={styles.number_container}>
-            <strong>{user.likes_count}</strong>
-            <span>Likes</span>
+            <strong>{user?.stats?.totalCollects}</strong>
+            <span>Collects</span>
           </div>
         </h2>
-        <h2 className={styles.bio}>{user.bio || "No bio yet."}</h2>
+        <h2 className={styles.bio}>{user?.bio || "No bio yet."}</h2>
       </div>
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
           <p className={styles.title}>Videos</p>
-          <p className={styles.title}>Liked</p>
+          <p className={styles.title}>Collected</p>
         </div>
         <div className={styles.list_video_container}>
           <div className={styles.list_video}>
-            {user?.videos?.map((video) => (
+            {/* {myVideos && myVideos.map((video) => {
+              {console.log(video)}
+              <h1>{video?.metadata?.name}</h1>
+            })
+            } */}
+
+            {/* {user?.videos?.map((video) => (
               <Link
                 key={video.id}
                 to={config.routes.videoLink(video)}
@@ -147,7 +173,7 @@ function Profile() {
                   </div>
                 </div>
               </Link>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./Sidebar.module.scss";
@@ -6,28 +7,36 @@ import { config } from "~/config";
 import Button from "~/components/Core/Button";
 import SuggestedList from "./SuggestedList";
 import FollowingList from "./FollowingList";
+import { useApolloProvider } from "~/context/ApolloContext"
+import { useWalletProvider } from '../../context/WalletProvider';
 
 import Menu from "./Menu/Menu";
 
 function Sidebar() {
-  const { user } = useSelector((state) => state.user);
-
+  const { apolloContext } = useApolloProvider();
+  const { profiles, currentProfile } = apolloContext;
+  const { smartAccountAddress, connect, disconnect, isLoggedIn, loading, walletProvider, account } = useWalletProvider();
+  const [user, setUser] = useState();
+  useEffect(() => {
+    if(profiles !== undefined && profiles.length !== 0) {
+      setUser(profiles[currentProfile]);
+    }  
+  }, [profiles, currentProfile]);
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebar_scrollbar}>
         <Menu />
         <hr className={styles.hr} />
-        {!user && (
+        {!isLoggedIn && (
           <>
             <div className={styles.sidebar_login}>
               <p className={styles.login_tip}>
-                Log in to follow creators, like videos, and view comments.
+                Log in to follow creators, like videos, and collect videos as NFTs.
               </p>
-              <Link to={config.routes.login}>
-                <Button outline large className={styles.button_login}>
-                  Log in
-                </Button>
-              </Link>
+              <Button outline large className={styles.button_login} onClick={connect}>
+                <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/9543.png" width={"30px"}></img>
+                Connect Wallet
+              </Button>
             </div>
             <hr className={styles.hr} />
           </>
@@ -35,15 +44,15 @@ function Sidebar() {
 
         {/* <SuggestedList /> */}
 
-        {user && <FollowingList />}
+        {/* {user && <FollowingList />} */}
 
         <div className={styles.contact}>
-          <p>Contact me</p>
+          <p>Contact</p>
           <a
             className={styles.facebook}
-            href="https://www.facebook.com/htoann/"
+            href="https://github.com/The-Thunderbirds/LensTok"
           >
-            Trần Hữu Toàn
+            Team Thunderbirds: Github
           </a>
         </div>
       </div>

@@ -17,6 +17,7 @@ import {
   AUTHENTICATION,
   VERIFY,
   GET_PROFILES,
+  GET_PROFILE,
   GET_PUBLICATIONS,
   EXPLORE_PUBLICATIONS,
   HAS_TX_BEEN_INDEXED,
@@ -161,6 +162,16 @@ function ApolloContextProvider({ children }) {
     });
   };
 
+  const getProfileRequest = (request) => {
+    return apolloClient.query({
+      query: gql(GET_PROFILE),
+      variables: {
+        request,
+      },
+    });
+  };
+
+
   async function signChallenge(address) {
     const signer = await wallet.getSigner();
     const challengeResponse = await generateChallenge(address);
@@ -223,11 +234,23 @@ function ApolloContextProvider({ children }) {
     }
   }
 
-  async function getPublications(getPublicationQuery) {
+  async function getProfile(handle) {
+    let request = { handle: handle };
+    const profileFromHandle = await getProfileRequest(request);
+    return profileFromHandle;
+  }
+
+  async function getPublications(id) {
+    let request = {
+      profileId: id,
+      publicationTypes: ["POST"],
+      sources: ["tiktok"]
+    }
+
     return apolloClient.query({
       query: gql(GET_PUBLICATIONS),
       variables: {
-        request: getPublicationQuery,
+        request: request,
       },
     });
   }
@@ -470,6 +493,7 @@ function ApolloContextProvider({ children }) {
         authenticate,
         getProfiles: getProfilesByAccount,
         getProfilesByProfileIds,
+        getProfile,
         verify,
         apolloContext,
         dispatch,

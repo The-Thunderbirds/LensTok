@@ -11,6 +11,8 @@ import {
   FaFacebook,
   FaInstagram,
   FaLink,
+  FaBell,
+  FaBellSlash,
 } from "react-icons/fa";
 import React from "react";
 import languages from "./languages";
@@ -30,10 +32,9 @@ export const MENU_ITEMS_1 = [
 
 export const MENU_ITEMS_2 = [
   { title: "View profile", icon: <FaRegUser />, type: "toProfile" },
-  { title: "Get coins", icon: <FaBitcoin /> },
-  { title: "Settings", icon: <FaRegSun /> },
-  ...MENU_ITEMS_1,
-  { title: "Log out", icon: <FaSignOutAlt />, type: "logout", separate: true },
+  { title: "Disconnect Wallet", icon: <FaSignOutAlt />, type: "logout" },
+  {title: "Opt in for Notifications", icon: <FaBell />, type: "optIn"},
+  {title: "Opt out of Notifications", icon: <FaBellSlash />, type: "optOut"},
 ];
 
 export const MENU_ITEMS_SHARE = [
