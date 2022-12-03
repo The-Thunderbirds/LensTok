@@ -240,11 +240,17 @@ function ApolloContextProvider({ children }) {
     return profileFromHandle;
   }
 
-  async function getPublications(getPublicationQuery) {
+  async function getPublications(id) {
+    let request = {
+      profileId: id,
+      publicationTypes: ["POST"],
+      sources: ["tiktok"]
+    }
+
     return apolloClient.query({
       query: gql(GET_PUBLICATIONS),
       variables: {
-        request: getPublicationQuery,
+        request: request,
       },
     });
   }

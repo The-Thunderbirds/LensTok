@@ -21,13 +21,14 @@ function Profile() {
   const params = useParams();
   const nickname = params.nickname;
 
-  const { getProfile } = useApolloProvider();
+  const { getProfile, getPublications } = useApolloProvider();
 
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const [myVideos, setMyVideos] = useState([]);
 
+  useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
       const result = await getProfile(nickname);
@@ -38,6 +39,18 @@ function Profile() {
 
     fetchUser();
   }, [nickname])
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      const result = await getPublications(user.id);
+      console.log(result);
+      setMyVideos(result.data.publications.items);
+      setLoading(false);
+    }
+
+    fetchUser();
+  }, [user])
 
 
   const handleVideoPlay = (e) => {
@@ -126,11 +139,17 @@ function Profile() {
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
           <p className={styles.title}>Videos</p>
-          <p className={styles.title}>Liked</p>
+          <p className={styles.title}>Collected</p>
         </div>
         <div className={styles.list_video_container}>
           <div className={styles.list_video}>
-            {user?.videos?.map((video) => (
+            {/* {myVideos && myVideos.map((video) => {
+              {console.log(video)}
+              <h1>{video?.metadata?.name}</h1>
+            })
+            } */}
+
+            {/* {user?.videos?.map((video) => (
               <Link
                 key={video.id}
                 to={config.routes.videoLink(video)}
@@ -154,7 +173,7 @@ function Profile() {
                   </div>
                 </div>
               </Link>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>
