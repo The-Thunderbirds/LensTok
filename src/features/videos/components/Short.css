@@ -177,7 +177,7 @@ aside footer small {
 
 .navigation-container {
   display: flex!important;
-  height: 96vh!important;
+  height: 80vh!important;
   flex-direction: column!important;
   justify-content: space-between!important;
   padding: 1rem!important;
@@ -204,7 +204,7 @@ aside footer small {
 }
 
 .nav-up {
-  margin-top: 5rem!important;
+  /* margin-top: 5rem!important; */
 }
 
 .short-container::-webkit-scrollbar {
@@ -221,8 +221,8 @@ aside footer small {
   -webkit-scroll-snap-type: y mandatory!important;
   -ms-scroll-snap-type: y mandatory!important;
   scroll-snap-type: y mandatory!important;
-  padding-top: 5rem!important;
-  scroll-padding-top: 5rem!important;
+  /* padding-top: 5rem!important; */
+  scroll-padding-bottom: 5rem!important;
 }
 
 .reel {
