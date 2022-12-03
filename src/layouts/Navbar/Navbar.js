@@ -170,11 +170,7 @@ function Navbar() {
                   <FaRegPaperPlane />
                 </div>
               </Tippy>
-              <Tippy content="Notifications" placement="bottom" theme="gradient">
-                <div className={styles.menu_action}>
-                  <FaRegCommentAlt />
-                </div>
-              </Tippy>
+
 
               <Menu items={messages} onChange={handleMenuChange}>
               <div className={styles.menu_action}>
