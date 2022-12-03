@@ -7,12 +7,14 @@ import {
   FaRegMoon,
   FaUserEdit,
   FaWallet,
-  FaRegUser
+  FaRegUser,
+  FaRegBell
 } from "react-icons/fa";
 import { BsSun } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
 import Logo from "~/assets/images/logo.svg";
 import LogoDark from "~/assets/images/logo_dark.svg";
+import Bell from "~/assets/images/Bell.svg";
 
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
@@ -177,8 +179,8 @@ function Navbar() {
 
               <Menu items={messages} onChange={handleMenuChange}>
               <div className={styles.menu_action}>
-                  <FaRegCommentAlt />
-                </div>
+                <img src={Bell} alt="Push" width="35" onMouseEnter={() => console.log("hello")}/>
+              </div>
               </Menu>
 
               <Menu items={MENU_ITEMS_2} onChange={handleMenuChange}>
