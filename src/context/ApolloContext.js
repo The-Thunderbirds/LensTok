@@ -256,6 +256,21 @@ function ApolloContextProvider({ children }) {
     });
   }
 
+  async function getCollectedPublications(account) {
+    let request = {
+      collectedBy: account,
+      publicationTypes: ["POST"],
+      sources: ["tiktok"]
+    }
+
+    return apolloClient.query({
+      query: gql(GET_PUBLICATIONS),
+      variables: {
+        request: request,
+      },
+    });
+  }
+
   async function hasTxBeenIndexed(txHash) {
     return apolloClient.query({
       query: gql(HAS_TX_BEEN_INDEXED),
@@ -530,7 +545,8 @@ function ApolloContextProvider({ children }) {
         doesFollow,
         createCollectTypedData,
         collectWithSig,
-        getFeed
+        getFeed,
+        getCollectedPublications
       }}>
       {children}
     </ApolloContext.Provider>

@@ -21,9 +21,9 @@ function Profile() {
   const params = useParams();
   const nickname = params.nickname;
 
-  const { getProfile, getPublications } = useApolloProvider();
+  const { getProfile, getPublications, getCollectedPublications } = useApolloProvider();
   //combine user and loading state 
-  const [profile, setProfile] = useState({ user: null, loading: true, myVideos:[] });
+  const [profile, setProfile] = useState({ user: null, loading: true, myVideos:[], myCollections: [] });
   const [viewCollected, setViewCollected] = useState(false);
 
   useEffect(() => {
@@ -33,11 +33,14 @@ function Profile() {
       const user = profiles.data.profile;
       const publications = await getPublications(user.id);
       const myVideos = publications.data.publications.items;
-      console.log(profiles);
-      console.log(user);
-      console.log(publications);
-      console.log(myVideos);
-      setProfile({ user, loading: false, myVideos });
+      const collections = await getCollectedPublications(user.ownedBy);
+      const myCollections = collections.data.publications.items;
+      // console.log(profiles);
+      // console.log(user);
+      // console.log(publications);
+      // console.log(myVideos);
+      // console.log(myCollections);
+      setProfile({ user, loading: false, myVideos, myCollections });
     }
 
     fetchUser();
@@ -151,9 +154,22 @@ function Profile() {
                   </div>
                 </div>
             ))) : 
-              <>
-              </>
-          }
+            profile.myCollections && profile.myCollections.map((video) => (
+              <div key={video.id} className={styles.video_container}>
+                <video
+                  src= {video.metadata.media[0].original.url}
+                  muted
+                  loop
+                  onMouseEnter={handleVideoPlay}
+                  onMouseLeave={handleVideoPause}
+                  poster = {video.metadata.media[0].original.url}
+                />
+                <div className={styles.video_desc}>
+                  <p>{video.metadata.description}</p>
+                </div>
+              </div>
+          ))
+        }
           </div>
         </div>
       </div>
