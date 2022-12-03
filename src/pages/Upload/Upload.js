@@ -17,6 +17,8 @@ function Upload() {
   const [filePreview, setFilePreview] = useState("");
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
 
   const handleFile = (e) => {
@@ -25,27 +27,12 @@ function Upload() {
     setFile(e.target.files[0]);
   };
 
-  const handleUploadVideo = async (data) => {
+  const handleUploadVideo = async () => {
     await handlePost();
   };
 
   const submitForm = (data) => {
-    const fullData = { ...data, upload_file: file };
-
-    const formData = new FormData();
-
-    for (const key in fullData) {
-      if (key === "allows") {
-        if (fullData[key])
-          fullData.allows.forEach(function (value) {
-            formData.append("allows[]", value);
-          });
-      } else {
-        formData.append(key, fullData[key]);
-      }
-    }
-
-    handleUploadVideo(formData);
+    handleUploadVideo();
   };
 
   const handlePost = async () => {
@@ -80,23 +67,23 @@ function Upload() {
     let pubMetadata = {
       version: "1.0.0",
       metadata_id: uuidv4(),
-      description: caption,
-      external_url: "https://www.youtube.com/shorts/zzHe_fs4lzw",
-      name: caption,
+      description: description,
+      external_url: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
+      name: name,
       attributes: [
         {
           displayType: "string",
           traitType: "Title",
-          value: caption,
+          value: name,
         },
       ],
       media: [
         {
-          item: "https://www.youtube.com/shorts/zzHe_fs4lzw",
+          item: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
           type: "video/mp4",
         },
       ],
-      animation_url: "https://www.youtube.com/shorts/zzHe_fs4lzw",
+      animation_url: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
       appId: "tiktok",
     };
 
@@ -162,7 +149,7 @@ function Upload() {
                       720x1280 resolution or higher
                     </span>
                     <span className={styles.upload_state_notice}>
-                      Up to 10 minutes
+                      Up to 1 minute
                     </span>
                     <span className={styles.upload_state_notice}>
                       Less than 2 GB
@@ -187,9 +174,28 @@ function Upload() {
           <div className={styles.upload_content_right}>
             <div className={styles.form_item}>
               <div className={styles.form_header}>
-                <span className={styles.form_label}>Caption</span>
+                <span className={styles.form_label}>Name</span>
                 <span className={styles.form_count}>
-                  {caption.length} / 150
+                  {name.length} / 20
+                </span>
+              </div>
+              <div className={styles.form_footer}>
+                <input
+                  maxLength={20}
+                  name="name"
+                  id="description"
+                  {...register("name")}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={styles.form_input}
+                />
+              </div>
+            </div>
+            <div className={styles.form_item}>
+              <div className={styles.form_header}>
+                <span className={styles.form_label}>Description</span>
+                <span className={styles.form_count}>
+                  {description.length} / 150
                 </span>
               </div>
               <div className={styles.form_footer}>
@@ -198,13 +204,13 @@ function Upload() {
                   name="description"
                   id="description"
                   {...register("description")}
-                  value={caption}
-                  onChange={(e) => setCaption(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className={styles.form_textarea}
                 />
               </div>
             </div>
-            <div className={styles.form_item}>
+            {/* <div className={styles.form_item}>
               <div className={styles.form_header}>
                 <span className={styles.form_label}>Cover</span>
               </div>
@@ -233,7 +239,7 @@ function Upload() {
                   placeholder="Music"
                 />
               </div>
-            </div>
+            </div> */}
             <div className={styles.form_item}>
               <div className={styles.form_header}>
                 <span className={styles.form_label}>
@@ -253,7 +259,7 @@ function Upload() {
                 </select>
               </div>
             </div>
-            <div className={styles.form_item}>
+            {/* <div className={styles.form_item}>
               <div className={styles.form_header}>
                 <span className={styles.form_label}>Allow users to:</span>
               </div>
@@ -289,7 +295,7 @@ function Upload() {
                   <label htmlFor="">Stitch</label>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className={styles.button_container}>
               <Button text className={styles.discard}>
                 Discard
