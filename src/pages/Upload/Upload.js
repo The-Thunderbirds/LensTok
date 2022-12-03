@@ -20,7 +20,7 @@ function Upload() {
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
   const [name, setName] = useState("");
-  const [videoURL, setvideoURL] = useState("");
+  const [videoURL, setVideoURL] = useState("");
   const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
 
