@@ -9,28 +9,36 @@ import Button from "~/components/Core/Button";
 import Loader from "~/components/Core/Loader";
 import WrapperAuth from "~/components/WrapperAuth";
 import handleFollowFunc from "~/utils/handleFollow";
-import { getUsersService } from "~/features/accounts/services/getUsersService";
 import { getFullName } from "~/utils/common";
 import { useSelector } from "react-redux";
 import { FaRegEdit } from "react-icons/fa";
 import { config } from "~/config";
 
+import { useApolloProvider } from "~/context/ApolloContext";
+
 function Profile() {
-  const { user: userRedux } = useSelector((state) => state.user);
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+
   const params = useParams();
   const nickname = params.nickname;
 
-  useEffect(() => {
-    const fetchApi = async () => {
-      const result = await getUsersService.user(nickname);
-      setUser(result);
-      setLoading(false);
-    };
+  const { getProfile } = useApolloProvider();
 
-    fetchApi();
-  }, [nickname, userRedux, user.is_followed]);
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    const fetchUser = async () => {
+      setLoading(true);
+      const result = await getProfile(nickname);
+      console.log(result);
+      setUser(result.data.profile);
+      setLoading(false);
+    }
+
+    fetchUser();
+  }, [nickname])
+
 
   const handleVideoPlay = (e) => {
     e.target.play();
@@ -42,8 +50,8 @@ function Profile() {
   };
 
   const handleFollow = async () => {
-    const isFollowed = await handleFollowFunc(user);
-    setUser((user) => ({ ...user, is_followed: isFollowed }));
+    // const isFollowed = await handleFollowFunc(user);
+    // setUser((user) => ({ ...user, is_followed: isFollowed }));
   };
 
   if (loading) {
@@ -55,18 +63,17 @@ function Profile() {
       <div className={styles.header}>
         <div className={styles.info}>
           <Image
-            src={user.avatar}
+            src={user?.picture?.original?.url}
             width={116}
             height={116}
             className={styles.avatar}
           />
           <div className={styles.title_container}>
             <h2 className={styles.user_title}>
-              {user.nickname}
-              {user.tick && <Image src={Verify} className={styles.verify} />}
+              {user?.handle}
             </h2>
-            <h4 className={styles.user_fullname}>{getFullName(user)}</h4>
-            {userRedux?.id !== user?.id ? (
+            <h4 className={styles.user_fullname}>{user?.name}</h4>
+            {/* {userRedux?.id !== user?.id ? (
               <WrapperAuth>
                 <div className={styles.button_container}>
                   {user.is_followed ? (
@@ -97,7 +104,7 @@ function Profile() {
                   Edit profile
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <h2 className={styles.count_info}>
