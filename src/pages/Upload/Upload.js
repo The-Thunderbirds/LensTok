@@ -5,6 +5,8 @@ import { UploadIcon } from "~/components/Icons";
 import styles from "./Upload.module.scss";
 import { v4 as uuidv4 } from "uuid";
 import { Web3Storage } from 'web3.storage'
+import axios from "axios";
+import Loader from "~/components/Core/Loader";
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
@@ -13,18 +15,81 @@ function Upload() {
   const { apolloContext, createPostTypedData, postWithSig } = useApolloProvider();
   const { profiles, currentProfile } = apolloContext;
   
-  
+  const [loading, setLoading] = useState(false);
   const [filePreview, setFilePreview] = useState("");
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
   const [name, setName] = useState("");
+  const [videoURL, setvideoURL] = useState("");
   const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
 
   const handleFile = (e) => {
+    // setLoading(true);
     const src = URL.createObjectURL(e.target.files[0]);
     setFilePreview(src);
     setFile(e.target.files[0]);
+    const video_file = e.target.files[0];
+    
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(video_file);
+    
+    reader.onloadend = async () => {
+      let videoData = Buffer.from(reader.result);
+      let instance = axios.create({
+				baseURL: "https://livepeer.com/api/",
+				headers: {
+					Authorization: `Bearer ${import.meta.env.VITE_LIVEPEER_API_KEY}`,
+				},
+			});
+      
+      let response = await instance.post("asset/request-upload", {
+				name: video_file.name,
+			});
+      let taskResponse;
+      let assetId = response.data.asset.id;
+      let taskId = response.data.task.id;
+      console.log("Done URL generation");
+      console.log(response);
+
+      let uploadResponse = await axios({
+				method: "put",
+				url: response.data.url,
+				data: videoData,
+				headers: { "Content-Type": "video/mp4" },
+			});
+
+      console.log("Done Video Upload");
+      console.log(uploadResponse);
+
+      while(true){
+        let taskResponse = await instance.get(
+          `https://livepeer.com/api/task/${taskId}`
+        );
+        if(taskResponse.data.status.phase == "completed") break;
+      }
+
+      let ipfsExportResponse = await instance.post(
+        `/asset/${assetId}/export`,
+        {
+          ipfs: {},
+        }
+      );
+      
+      taskId = ipfsExportResponse.data.task.id;
+      while(true){
+        taskResponse = await instance.get(
+          `https://livepeer.com/api/task/${taskId}`
+        );
+        if(taskResponse.data.status.phase == "completed") break;
+      }
+      
+      let result = taskResponse.data.output.export.ipfs;
+      console.log(result.videoFileGatewayUrl);
+      setVideoURL(result.videoFileGatewayUrl);
+
+      // setLoading(false);
+    }
   };
 
   const handleUploadVideo = async () => {
@@ -68,7 +133,7 @@ function Upload() {
       version: "1.0.0",
       metadata_id: uuidv4(),
       description: description,
-      external_url: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
+      external_url: videoURL,
       name: name,
       attributes: [
         {
@@ -79,11 +144,11 @@ function Upload() {
       ],
       media: [
         {
-          item: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
+          item: videoURL,
           type: "video/mp4",
         },
       ],
-      animation_url: "https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4",
+      animation_url: videoURL,
       appId: "tiktok",
     };
 
@@ -101,6 +166,10 @@ function Upload() {
     const cid = await client.put(files)
     console.log('stored files with cid:', cid)
     return cid
+  }
+
+  if (loading) {
+    return <Loader />;
   }
 
   return (

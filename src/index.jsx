@@ -6,9 +6,19 @@ import store from "./app/store";
 import { BrowserRouter } from "react-router-dom";
 import { WalletProviderProvider } from "./context/WalletProvider";
 import { ApolloContextProvider } from "./context/ApolloContext";
+import {
+  LivepeerConfig,
+  createReactClient,
+  studioProvider,
+} from '@livepeer/react';
+
+const client = createReactClient({
+  provider: studioProvider({ apiKey: import.meta.env.VITE_LIVEPEER_API_KEY }),
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <LivepeerConfig client={client}>
     <WalletProviderProvider>
       <ApolloContextProvider>
         <Provider store={store}>
@@ -18,5 +28,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Provider>
       </ApolloContextProvider>
     </WalletProviderProvider>
+    </LivepeerConfig>
   </React.StrictMode>
 );
