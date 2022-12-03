@@ -137,7 +137,6 @@ function Profile() {
           <div className={styles.list_video}>
             {profile.myVideos && profile.myVideos.map((video) => (
                 <div key={video.id} className={styles.video_container}>
-                {console.log(video.metadata.media[0].original.url)}
                   <video
                     src= {video.metadata.media[0].original.url}
                     muted
