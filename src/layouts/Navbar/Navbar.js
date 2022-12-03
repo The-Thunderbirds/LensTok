@@ -30,8 +30,16 @@ import WrapperAuth from "~/components/WrapperAuth";
 import ConnectWallet from "~/components/Wallet/ConnectWallet";
 import DisconnectWallet from "~/components/Wallet/DisconnectWallet";
 import { useWalletProvider } from '../../context/WalletProvider';
+import { useApolloProvider } from "~/context/ApolloContext"
 
 function Navbar() {
+
+  const { apolloContext } = useApolloProvider();
+  const { profiles, currentProfile } = apolloContext;
+
+  const currUser = profiles[currentProfile];
+  console.log(currUser) // Use this as user
+
   const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
