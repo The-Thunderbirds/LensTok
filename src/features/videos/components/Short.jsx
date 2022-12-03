@@ -173,9 +173,10 @@ function Short({ short, shortContainerRef }) {
                   <img src={short?.profile?.picture?.original?.url} alt="" />
                 </Link>
                 <span>
-                  <div>
+                  <div >
                     <Link
                       to={"@" + short.profile.handle}
+                      className="title"
                     >
                       {short?.profile?.handle}
                     </Link>
