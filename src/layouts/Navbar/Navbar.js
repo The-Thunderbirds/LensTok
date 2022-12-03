@@ -38,8 +38,8 @@ function Navbar() {
   const { profiles, currentProfile } = apolloContext;
   const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
   
-  const [currUser, setCurrUser] = useState();
-  const { user } = useSelector((state) => state.user);
+  const [user, setUser] = useState();
+  // const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +49,7 @@ function Navbar() {
 
     useEffect(() => {
       if(profiles !== undefined && profiles.length !== 0) {
-        setCurrUser(profiles[currentProfile]);
+        setUser(profiles[currentProfile]);
       }  
     }, [profiles, currentProfile]);
 
@@ -70,7 +70,7 @@ function Navbar() {
         dispatch(userLogout());
         break;
       case "toProfile":
-        navigate(config.routes.profileLink(user.nickname));
+        navigate(config.routes.profileLink(user.handle));
       default:
         break;
     }
@@ -86,16 +86,20 @@ function Navbar() {
         <Search />
 
         <div className={styles.navbar_right}> 
-        <WrapperAuth>
-            <Button
-              className={styles.upload_icon}
-              text
-              leftIcon={<FaUserEdit/>}
-              to={config.routes.login}
-            >
-              Create Profile
-            </Button>
-          </WrapperAuth>
+        {
+          profiles == undefined || profiles.length == 0 && (
+          <WrapperAuth>
+              <Button
+                className={styles.upload_icon}
+                text
+                leftIcon={<FaUserEdit/>}
+                to={config.routes.login}
+              >
+                Create Profile
+              </Button>
+            </WrapperAuth>
+          )  
+      }
           <WrapperAuth>
             <Button
               className={styles.upload_icon}
@@ -122,7 +126,9 @@ function Navbar() {
               <FaRegMoon />
             </div>
           )}
-
+          {console.log("isLoggedIn", isLoggedIn)}
+          {console.log("profiles", profiles)}
+          {console.log( "user", user)}
           {user ? (
             <>
               <Tippy content="Messages" placement="bottom" theme="gradient">
@@ -140,7 +146,7 @@ function Navbar() {
               <Menu items={MENU_ITEMS_2} onChange={handleMenuChange}>
                 <Image
                   className={styles.dropdown_avatar}
-                  src={user.avatar}
+                  src={user.picture.original.url}
                   alt="Avatar"
                 />
               </Menu>
