@@ -1,4 +1,5 @@
 import * as PushAPI from "@pushprotocol/restapi";
+import * as ethers from "ethers";
 
 
 function getCAIPAddress(address, chainID = "80001") {
@@ -10,11 +11,13 @@ function getCAIPAddresses(addresses, chainID = "80001") {
     addresses.forEach((addr) => {
         new_addresses.push(getCAIPAddress(addr));
     })
+    console.log(new_addresses);
     return new_addresses;
 }
 
 const PK = import.meta.env.VITE_CHANNEL_PK;
 const Pkey = `0x${PK}`;
+const signer = new ethers.Wallet(Pkey);
 const CHANNEL_ADDRESS = "0x872799857a381aA822052a8a62b4371ABE5d5d9c";
 
 
@@ -63,11 +66,38 @@ export const fetch_notifications = async (account) => {
 }
 
 
-
 const fetch_subscriptions = async (account) => {
     const subscriptions = await PushAPI.user.getSubscriptions({
       user: getCAIPAddress(account),
       env: 'staging'
     });
     console.log(subscriptions);
+}
+
+
+export const sendNotificationToAll = async (title, body) => {
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 1, // broadcast
+        identityType: 2,
+        notification: {
+          title: title,
+          body: body
+        },
+        payload: {
+          title: title,
+          body: body,
+          cta: '',
+          img: ''
+        },
+        channel: getCAIPAddress(CHANNEL_ADDRESS),
+        env: 'staging'
+      });
+      
+      // apiResponse?.status === 204, if sent successfully!
+      console.log('API repsonse: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
   }

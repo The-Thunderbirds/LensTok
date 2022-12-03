@@ -99,8 +99,29 @@ function Navbar() {
   };
 
   const fetchAllNotifications = async () => {
-    const notifs = await fetch_notifications(account);
-    console.log(notifs);
+    const notifs = await fetch_notifications(account);    
+
+    // const newNotifs = [
+    //   {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
+    //   {title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
+    //   {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
+    //   {title: "Someone do my DV assignment", icon: <FaRegUser />, type: "notif"},
+    // ];
+
+    const newNotifs = [];
+
+    notifs.map((notif) => {
+      let newNotif = {
+        title: notif.title,
+        icon: notif.icon,
+        type: "notif"
+      }
+      newNotifs.push(newNotif);
+    })
+
+    console.log(newNotifs)
+
+    setMessages(newNotifs);
   }
 
   return (

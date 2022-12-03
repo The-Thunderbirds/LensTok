@@ -9,15 +9,18 @@ import axios from "axios";
 import Loader from "~/components/Core/Loader";
 import Livepeer from "~/assets/images/Livepeer.svg"
 import IPFS from "~/assets/images/ipfs.png"
+import lens from "~/assets/images/lens.svg"
+import Push from "~/assets/images/Bell.svg"
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
+import { sendNotificationToAll } from "~/utils/pushNotifications"
 
 function Upload() {
   const { apolloContext, createPostTypedData, postWithSig } = useApolloProvider();
   const { profiles, currentProfile } = apolloContext;
   
-  const [loading, setLoading] = useState(false);
+  const [lpLoading, setLpLoading] = useState(false);
   const [filePreview, setFilePreview] = useState("");
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
@@ -26,9 +29,11 @@ function Upload() {
   const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
   const [ipfsLoading, setIpfsLoading] = useState(false);
+  const [lensLoading, setLensLoading] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
 
   const handleFile = (e) => {
-    setLoading(true);
+    setLpLoading(true);
     const src = URL.createObjectURL(e.target.files[0]);
     setFilePreview(src);
     setFile(e.target.files[0]);
@@ -91,14 +96,19 @@ function Upload() {
       console.log(result.videoFileGatewayUrl);
       setVideoURL(result.videoFileGatewayUrl);
 
-      setLoading(false);
+      setLpLoading(false);
     }
   };
 
   const handleUploadVideo = async () => {
-    setIpfsLoading(true);
-    await handlePost();
-    setIpfsLoading(false);
+    await handlePost();    
+
+    setPushLoading(true);
+    const title = "New Video : " + name;
+    const body = "Checkout the video new!"
+    await sendNotificationToAll(title, body);
+    setPushLoading(false);
+    window.alert("Upload has been completed succesfully");
   };
 
   const submitForm = (data) => {
@@ -107,10 +117,13 @@ function Upload() {
 
   const handlePost = async () => {
     
+    setIpfsLoading(true);
     const files = makeFileObjects();
     const ipfsResult = await storeFiles(files);
     console.log(ipfsResult);
+    setIpfsLoading(false);
 
+    setLensLoading(true);
     const createPostRequest = {
       profileId: profiles[currentProfile].id,
       contentURI: `https://${ipfsResult}.ipfs.w3s.link/metadata.json`,
@@ -131,6 +144,7 @@ function Upload() {
     console.log(result);
 
     await postWithSig(result.data.createPostTypedData.typedData);
+    setLensLoading(false);
   }
 
   function makeFileObjects() {
@@ -301,20 +315,32 @@ function Upload() {
               </Button>
               <Button
                 primary
-                disabled={!file || loading || ipfsLoading}
+                disabled={!file || lpLoading || ipfsLoading || lensLoading || pushLoading}
                 className={styles.post}
                 type="submit"
               >
-                {loading ? 
+                {lpLoading ? 
                 <>
                 Uploading on
                 <img src={Livepeer} width={"20px"}/>
                 </>
                 : 
-                !ipfsLoading ?
+                ipfsLoading ?
                 <>
                 Uploading on 
                 <img src={IPFS} width={"20px"}/>
+                </>
+                :
+                lensLoading ?
+                <>
+                Uploading on 
+                <img src={lens} width={"20px"}/>
+                </>
+                :
+                pushLoading ?
+                <>
+                Notifying via 
+                <img src={Push} width={"25px"}/>
                 </>
                 :
                 "Post"}
