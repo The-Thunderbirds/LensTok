@@ -8,6 +8,8 @@ import Button from "~/components/Core/Button";
 import Modal from "~/components/Modal";
 import {ModalBody, ModalFooter, ModalHeader} from '~/components/Modal/Modal';
 import { WorldIDWidget } from "@worldcoin/id";
+import styles from "./Short.module.scss";
+import lens from "~/assets/images/lens.svg"
 
 function Short({ short, shortContainerRef }) {
 
@@ -27,6 +29,8 @@ function Short({ short, shortContainerRef }) {
   const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [followedByMe, setFollowedByMe] = useState(false);
+
+  const [wcVerified, setWcVerified] = useState(false);
 
   const [videoUrl, setVideoUrl] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -123,16 +127,29 @@ function Short({ short, shortContainerRef }) {
           // hideCloseButton
         >
           <ModalHeader>
-            <h2>Modal header</h2>
+            <h2>Collect Video as NFT</h2>
           </ModalHeader>
           <ModalBody>
           <WorldIDWidget
-      actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
-      signal="my_signal"
-      enableTelemetry
-      onSuccess={(verificationResponse) => console.log(verificationResponse)} // you'll actually want to pass the proof to the API or your smart contract
-      onError={(error) => console.error(error)}
-    />
+            actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
+            signal="my_signal"
+            enableTelemetry
+            onSuccess={(verificationResponse) => {
+              setWcVerified(true);
+            }} // you'll actually want to pass the proof to the API or your smart contract
+            onError={(error) => console.error(error)}
+          />
+          { wcVerified &&
+            <Button
+              primary
+              className={styles.post}
+              type="submit"
+              rightIcon=<img src={lens} style={{width:"32px", paddingLeft:"5px"}}/>
+              onClick={()=>collect()}
+            >
+              Collect
+            </Button>
+          }
           </ModalBody>
           <ModalFooter>
             <Button onClick={() => setShowModal(false)}>Close</Button>
