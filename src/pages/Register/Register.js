@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { config } from "~/config";
 import { userRegister } from "~/features/authentication/userAction";
-
+import axios from "axios";
 import { WorldIDWidget } from "@worldcoin/id";
 
 function Register() {
@@ -75,7 +75,9 @@ function Register() {
       actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
       signal="my_signal"
       enableTelemetry
-      onSuccess={(verificationResponse) => console.log(verificationResponse)} // you'll actually want to pass the proof to the API or your smart contract
+      onSuccess={(verificationResponse) => {
+        console.log(verificationResponse);
+      }}
       onError={(error) => console.error(error)}
     />
     </div>
