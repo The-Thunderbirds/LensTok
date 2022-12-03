@@ -228,7 +228,7 @@ function Short({ short, shortContainerRef }) {
             <span className="value">{short?.stats?.totalAmountOfComments}</span>
           </div>
           <div>
-            <ion-icon name="layers-outline" onClick={collect}></ion-icon>
+            <ion-icon name="layers-outline" onClick={() => { if (window.confirm('Are you sure you wish to collect?')) collect() }}></ion-icon>
           </div>
           <div>
             <ion-icon name="ellipsis-vertical-outline"></ion-icon>

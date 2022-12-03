@@ -178,18 +178,7 @@ function Navbar() {
               <FaRegMoon />
             </div>
           )}
-          {!isLoggedIn && (
-                    <Button className={styles.upload_icon} leftIcon={<FaWallet />}  onClick={connect}>
-                    {isLoggedIn && smartAccountAddress
-                      ? `${smartAccountAddress?.slice(0, 6)}...${smartAccountAddress?.slice(
-                          -6
-                        )}`
-                      : loading
-                      ? "Setting up..."
-                      : "Connect Wallet"}
-                  </Button>
-              )
-              }
+
           { isLoggedIn && user &&(
             <>
               {/* <Button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</Button>

@@ -246,8 +246,8 @@ aside footer small {
 }
 
 video {
-  height: 100%!important;
-  width: 100%!important;
+  height: 100%;
+  width: 100%;
 }
 
 .video {
@@ -365,7 +365,7 @@ video {
 }
 
 .user-info button {
-  background: #18e588!important;
+  background: rgb(151 69 221)!important;
   font-weight: 600!important;
   border: none!important;
   padding: 0.5rem 2rem!important;
