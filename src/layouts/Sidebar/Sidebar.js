@@ -31,13 +31,12 @@ function Sidebar() {
           <>
             <div className={styles.sidebar_login}>
               <p className={styles.login_tip}>
-                Log in to follow creators, like videos, and view comments.
+                Log in to follow creators, like videos, and collect videos as NFTs.
               </p>
-              <Link to={config.routes.login}>
-                <Button outline large className={styles.button_login}>
-                  Log in
-                </Button>
-              </Link>
+              <Button outline large className={styles.button_login} onClick={connect}>
+                <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/9543.png" width={"30px"}></img>
+                Connect Wallet
+              </Button>
             </div>
             <hr className={styles.hr} />
           </>
@@ -53,7 +52,7 @@ function Sidebar() {
             className={styles.facebook}
             href="https://github.com/The-Thunderbirds/LensTok"
           >
-            Github
+            Team Thunderbirds: Github
           </a>
         </div>
       </div>
