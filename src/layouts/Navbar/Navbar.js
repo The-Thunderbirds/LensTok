@@ -6,7 +6,8 @@ import {
   FaPlus,
   FaRegMoon,
   FaUserEdit,
-  FaWallet
+  FaWallet,
+  FaRegUser
 } from "react-icons/fa";
 import { BsSun } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
@@ -46,7 +47,12 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [theme, setTheme] = useState(localStorage.getItem("theme"));
-
+  const messages = [ // Fetch these, and store messages in state using useState
+    {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
+    { title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
+    {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
+    {title: "Someone do my DV assignment", icon: <FaRegUser />, type: "notif"},
+  ];
   const isLoginPage = location.pathname.includes("/login");
 
     useEffect(() => {
@@ -71,7 +77,7 @@ function Navbar() {
       case "logout":
         dispatch(disconnect());
         break;
-      case "toProfile":
+      case "notif":
         navigate(config.routes.profileLink(user.handle));
         break;
       case "optIn":
@@ -164,19 +170,16 @@ function Navbar() {
                   <FaRegPaperPlane />
                 </div>
               </Tippy>
-
-              <Tippy content="Inbox" placement="bottom">
+              <Tippy content="Notifications" placement="bottom" theme="gradient">
                 <div className={styles.menu_action}>
                   <FaRegCommentAlt />
                 </div>
               </Tippy>
 
-              <Menu items={MENU_ITEMS_2} onChange={handleMenuChange}>
-                <Image
-                  className={styles.dropdown_avatar}
-                  src={user.picture.original.url}
-                  alt="Avatar"
-                />
+              <Menu items={messages} onChange={handleMenuChange}>
+              <div className={styles.menu_action}>
+                  <FaRegCommentAlt />
+                </div>
               </Menu>
             </>
           )}
