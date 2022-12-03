@@ -6,6 +6,7 @@ import {
   FaPlus,
   FaRegMoon,
   FaUserEdit,
+  FaWallet
 } from "react-icons/fa";
 import { BsSun } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
@@ -27,8 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "~/features/authentication/userAction";
 import { useNavigate } from "react-router-dom";
 import WrapperAuth from "~/components/WrapperAuth";
-import ConnectWallet from "~/components/Wallet/ConnectWallet";
-import DisconnectWallet from "~/components/Wallet/DisconnectWallet";
 import { useWalletProvider } from '../../context/WalletProvider';
 import { useApolloProvider } from "~/context/ApolloContext"
 
@@ -38,7 +37,7 @@ function Navbar() {
 
   const { apolloContext } = useApolloProvider();
   const { profiles, currentProfile } = apolloContext;
-  const { smartAccountAddress, connect, isLoggedIn, loading, walletProvider, account } = useWalletProvider();
+  const { smartAccountAddress, connect, disconnect, isLoggedIn, loading, walletProvider, account } = useWalletProvider();
   
   const [user, setUser] = useState();
   // const { user } = useSelector((state) => state.user);
@@ -70,10 +69,14 @@ function Navbar() {
   const handleMenuChange = (menuItem) => {
     switch (menuItem.type) {
       case "logout":
-        dispatch(userLogout());
+        dispatch(disconnect());
         break;
       case "toProfile":
         navigate(config.routes.profileLink(user.handle));
+      case "optIn":
+        dispatch(subscribe(walletProvider, account));
+      case "optOut":
+        dispatch(unsubscribe(walletProvider, account));
       default:
         break;
     }
@@ -88,7 +91,7 @@ function Navbar() {
 
         <Search />
 
-        <div className={styles.navbar_right}> 
+      <div className={styles.navbar_right}> 
         {
           profiles == undefined || profiles.length == 0 && (
           <WrapperAuth>
@@ -102,7 +105,7 @@ function Navbar() {
               </Button>
             </WrapperAuth>
           )  
-      }
+        }
           <WrapperAuth>
             <Button
               className={styles.upload_icon}
@@ -132,15 +135,22 @@ function Navbar() {
           {console.log("isLoggedIn", isLoggedIn)}
           {console.log("profiles", profiles)}
           {console.log( "user", user)}
-          {user ? (
+          {!isLoggedIn && (
+                    <Button className={styles.upload_icon} leftIcon={<FaWallet />}  onClick={connect}>
+                    {isLoggedIn && smartAccountAddress
+                      ? `${smartAccountAddress?.slice(0, 6)}...${smartAccountAddress?.slice(
+                          -6
+                        )}`
+                      : loading
+                      ? "Setting up..."
+                      : "Connect Wallet"}
+                  </Button>
+              )
+              }
+          { isLoggedIn && user &&(
             <>
-              {isLoggedIn ? (
-                <DisconnectWallet />
-              ) : (
-                <ConnectWallet />
-              )}
-              <button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</button>
-              <button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</button>
+              {/* <Button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</Button>
+              <Button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</Button> */}
 
               <Tippy content="Messages" placement="bottom" theme="gradient">
                 <div className={styles.menu_action}>
@@ -162,22 +172,13 @@ function Navbar() {
                 />
               </Menu>
             </>
-          ) : (
-            <>
-              {isLoggedIn ? (
-                <DisconnectWallet />
-              ) : (
-                <ConnectWallet />
-              )}
-
-
-              <Menu items={MENU_ITEMS_1} onChange={handleMenuChange}>
-                <div>
-                  <IoEllipsisVertical className={styles.dropdown_icon} />
-                </div>
-              </Menu>
-            </>
           )}
+
+            <Menu items={MENU_ITEMS_1} onChange={handleMenuChange}>
+              <div>
+                <IoEllipsisVertical className={styles.dropdown_icon} />
+              </div>
+            </Menu>
         </div>
       </div>
     </header>
