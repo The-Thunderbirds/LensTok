@@ -73,10 +73,13 @@ function Navbar() {
         break;
       case "toProfile":
         navigate(config.routes.profileLink(user.handle));
+        break;
       case "optIn":
         dispatch(subscribe(walletProvider, account));
+        break;
       case "optOut":
         dispatch(unsubscribe(walletProvider, account));
+        break;
       default:
         break;
     }
@@ -106,7 +109,9 @@ function Navbar() {
             </WrapperAuth>
           )  
         }
-          <WrapperAuth>
+        {
+          isLoggedIn && (
+            <WrapperAuth>
             <Button
               className={styles.upload_icon}
               text
@@ -116,6 +121,8 @@ function Navbar() {
               Upload
             </Button>
           </WrapperAuth>
+          )
+        }
 
           {theme === "dark" ? (
             <div

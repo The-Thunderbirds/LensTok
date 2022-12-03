@@ -32,8 +32,6 @@ export const MENU_ITEMS_1 = [
 
 export const MENU_ITEMS_2 = [
   { title: "View profile", icon: <FaRegUser />, type: "toProfile" },
-  { title: "Get coins", icon: <FaBitcoin /> },
-  { title: "Settings", icon: <FaRegSun /> },
   { title: "Disconnect Wallet", icon: <FaSignOutAlt />, type: "logout" },
   {title: "Opt in for Notifications", icon: <FaBell />, type: "optIn"},
   {title: "Opt out of Notifications", icon: <FaBellSlash />, type: "optOut"},
