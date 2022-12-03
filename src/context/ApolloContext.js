@@ -27,6 +27,7 @@ import {
   CREATE_FOLLOW_TYPED_DATA,
   DOES_FOLLOW,
   CREATE_COLLECT_TYPED_DATA,
+  FEED,
 } from "~/graphql";
 
 import { LENS_HUB_ABI } from "~/abi/LensHub";
@@ -363,6 +364,25 @@ function ApolloContextProvider({ children }) {
     });
   }
 
+  async function getFeed(id) {
+    let request = {
+      profileId: id,
+      sources: ["tiktok"]
+    }
+
+    const result = await apolloClient.query({
+      query: gql(FEED),
+      variables: {
+        request,
+      },
+    });
+  
+    console.log(result);
+
+    return result.data.feed;
+  };
+
+
   async function getPublication(publicationId) {
     console.log(publicationId);
     return apolloClient.query({
@@ -509,7 +529,8 @@ function ApolloContextProvider({ children }) {
         followWithSig,
         doesFollow,
         createCollectTypedData,
-        collectWithSig
+        collectWithSig,
+        getFeed
       }}>
       {children}
     </ApolloContext.Provider>
