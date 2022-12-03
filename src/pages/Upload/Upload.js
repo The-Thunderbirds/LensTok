@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Web3Storage } from 'web3.storage'
 import axios from "axios";
 import Loader from "~/components/Core/Loader";
+import Livepeer from "~/assets/images/Livepeer.svg"
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
@@ -25,7 +26,7 @@ function Upload() {
   const { register, handleSubmit } = useForm();
 
   const handleFile = (e) => {
-    // setLoading(true);
+    setLoading(true);
     const src = URL.createObjectURL(e.target.files[0]);
     setFilePreview(src);
     setFile(e.target.files[0]);
@@ -88,7 +89,7 @@ function Upload() {
       console.log(result.videoFileGatewayUrl);
       setVideoURL(result.videoFileGatewayUrl);
 
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -168,10 +169,6 @@ function Upload() {
     return cid
   }
 
-  if (loading) {
-    return <Loader />;
-  }
-
   return (
     <form onSubmit={handleSubmit(submitForm)} className={styles.upload_wrapper}>
       <div className={styles.upload_container}>
@@ -237,7 +234,6 @@ function Upload() {
               required
               type="file"
               accept="video/*"
-              // {...register("upload_file")}
             />
           </div>
           <div className={styles.upload_content_right}>
@@ -253,7 +249,6 @@ function Upload() {
                   maxLength={20}
                   name="name"
                   id="description"
-                  {...register("name")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={styles.form_input}
@@ -272,43 +267,12 @@ function Upload() {
                   maxLength={150}
                   name="description"
                   id="description"
-                  {...register("description")}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className={styles.form_textarea}
                 />
               </div>
             </div>
-            {/* <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Cover</span>
-              </div>
-              <div className={styles.form_footer}>
-                <input
-                  className={styles.form_input}
-                  name="thumbnail_time"
-                  id="thumbnail_time"
-                  {...register("thumbnail_time")}
-                  type="number"
-                  placeholder="Thumbnail capture position, units of seconds (Ex: 2)"
-                />
-              </div>
-            </div>
-            <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Music</span>
-              </div>
-              <div className={styles.form_footer}>
-                <input
-                  className={styles.form_input}
-                  name="music"
-                  id="music"
-                  {...register("music")}
-                  type="text"
-                  placeholder="Music"
-                />
-              </div>
-            </div> */}
             <div className={styles.form_item}>
               <div className={styles.form_header}>
                 <span className={styles.form_label}>
@@ -320,7 +284,6 @@ function Upload() {
                   className={styles.form_select}
                   name="viewable"
                   id="viewable"
-                  {...register("viewable")}
                 >
                   <option value="public">Public</option>
                   <option value="friends">Friends</option>
@@ -328,54 +291,23 @@ function Upload() {
                 </select>
               </div>
             </div>
-            {/* <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Allow users to:</span>
-              </div>
-              <div className={styles.form_footer}>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="comment"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Comment</label>
-                </div>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="duet"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Duet</label>
-                </div>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="stitch"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Stitch</label>
-                </div>
-              </div>
-            </div> */}
             <div className={styles.button_container}>
               <Button text className={styles.discard}>
                 Discard
               </Button>
               <Button
                 primary
-                disabled={!file}
+                disabled={!file || loading}
                 className={styles.post}
                 type="submit"
               >
-                Post
+                {!loading ? 
+                <>
+                Uploading on
+                <img src={Livepeer} width={"20px"}/>
+                </>
+                : 
+                "Post"}
               </Button>
             </div>
           </div>
