@@ -34,7 +34,7 @@ import WrapperAuth from "~/components/WrapperAuth";
 import { useWalletProvider } from '../../context/WalletProvider';
 import { useApolloProvider } from "~/context/ApolloContext"
 
-import { subscribe, unsubscribe } from "~/utils/pushNotifications";
+import { subscribe, unsubscribe, fetch_notifications } from "~/utils/pushNotifications";
 
 function Navbar() {
 
@@ -49,12 +49,14 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [theme, setTheme] = useState(localStorage.getItem("theme"));
-  const messages = [
-    {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
-    { title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
-    {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
-    {title: "Someone do my DV assignment", icon: <FaRegUser />, type: "notif"},
-  ];
+
+  const [messages, setMessages] = useState([]);
+  // const messages = [
+  //   {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
+  //   { title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
+  //   {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
+  //   {title: "Someone do my DV assignment", icon: <FaRegUser />, type: "notif"},
+  // ];
   const isLoginPage = location.pathname.includes("/login");
 
     useEffect(() => {
@@ -95,6 +97,11 @@ function Navbar() {
         break;
     }
   };
+
+  const fetchAllNotifications = async () => {
+    const notifs = await fetch_notifications(account);
+    console.log(notifs);
+  }
 
   return (
     <header className={styles.navbar}>
@@ -150,9 +157,6 @@ function Navbar() {
               <FaRegMoon />
             </div>
           )}
-          {console.log("isLoggedIn", isLoggedIn)}
-          {console.log("profiles", profiles)}
-          {console.log( "user", user)}
           {!isLoggedIn && (
                     <Button className={styles.upload_icon} leftIcon={<FaWallet />}  onClick={connect}>
                     {isLoggedIn && smartAccountAddress
@@ -179,7 +183,7 @@ function Navbar() {
 
               <Menu items={messages} onChange={handleMenuChange}>
               <div className={styles.menu_action}>
-                <img src={Bell} alt="Push" width="35" onMouseEnter={() => console.log("hello")}/>
+                <img src={Bell} alt="Push" width="35" onMouseEnter={() => fetchAllNotifications()}/>
               </div>
               </Menu>
 
