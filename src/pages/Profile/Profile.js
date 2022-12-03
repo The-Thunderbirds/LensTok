@@ -109,19 +109,19 @@ function Profile() {
         </div>
         <h2 className={styles.count_info}>
           <div className={styles.number_container}>
-            <strong>{user.followings_count}</strong>
+            <strong>{user?.stats?.totalFollowing}</strong>
             <span>Followings</span>
           </div>
           <div className={styles.number_container}>
-            <strong>{user.followers_count}</strong>
-            <span>Follower</span>
+          <strong>{user?.stats?.totalFollowers}</strong>
+            <span>Followers</span>
           </div>
           <div className={styles.number_container}>
-            <strong>{user.likes_count}</strong>
-            <span>Likes</span>
+            <strong>{user?.stats?.totalCollects}</strong>
+            <span>Collects</span>
           </div>
         </h2>
-        <h2 className={styles.bio}>{user.bio || "No bio yet."}</h2>
+        <h2 className={styles.bio}>{user?.bio || "No bio yet."}</h2>
       </div>
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
