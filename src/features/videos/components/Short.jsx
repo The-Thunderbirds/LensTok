@@ -126,10 +126,12 @@ function Short({ short, shortContainerRef }) {
           setShow={setShowModal}
           // hideCloseButton
         >
-          <ModalHeader>
+          <ModalHeader style = {{ marginLeft: "80px"}}>
             <h2>Collect Video as NFT</h2>
           </ModalHeader>
-          <ModalBody>
+          <ModalBody >
+            
+            <div style = {{ marginLeft: "80px"}}>
           <WorldIDWidget
             actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
             signal="my_signal"
@@ -139,6 +141,7 @@ function Short({ short, shortContainerRef }) {
             }} // you'll actually want to pass the proof to the API or your smart contract
             onError={(error) => console.error(error)}
           />
+          </div>
           { wcVerified &&
             <Button
               primary
