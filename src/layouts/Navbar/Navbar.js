@@ -59,11 +59,12 @@ function Navbar() {
   // ];
   const isLoginPage = location.pathname.includes("/login");
 
-    useEffect(() => {
-      if(profiles !== undefined && profiles.length !== 0) {
-        setUser(profiles[currentProfile]);
-      }  
-    }, [profiles, currentProfile]);
+  useEffect(() => {
+    if(profiles !== undefined && profiles.length !== 0) {
+      setUser(profiles[currentProfile]);
+      fetchAllNotifications();
+    }  
+  }, [profiles, currentProfile]);
 
   useEffect(() => {
     const element = document.body;
@@ -100,20 +101,13 @@ function Navbar() {
 
   const fetchAllNotifications = async () => {
     const notifs = await fetch_notifications(account);    
-
-    // const newNotifs = [
-    //   {title: "Hi, WASSUP", icon: <FaRegUser />, type: "notif" },
-    //   {title: "Yo, Man", icon: <FaRegUser />, type: "notif" },
-    //   {title: "EthIndia is coool", icon: <FaRegUser />, type: "notif"},
-    //   {title: "Someone do my DV assignment", icon: <FaRegUser />, type: "notif"},
-    // ];
-
     const newNotifs = [];
 
     notifs.map((notif) => {
       let newNotif = {
         title: notif.title,
-        icon: notif.icon,
+        icon: <FaRegUser />,
+        // icon: notif.icon,
         type: "notif"
       }
       newNotifs.push(newNotif);
@@ -190,7 +184,7 @@ function Navbar() {
 
               <Menu items={messages} onChange={handleMenuChange}>
               <div className={styles.menu_action}>
-                <img src={Bell} alt="Push" width="35" onMouseEnter={() => fetchAllNotifications()}/>
+                <img src={Bell} alt="Push" width="35"/>
               </div>
               </Menu>
 
