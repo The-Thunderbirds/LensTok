@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { config } from "~/config";
 import { userRegister } from "~/features/authentication/userAction";
 
+import { WorldIDWidget } from "@worldcoin/id";
+
 function Register() {
   const { loading, user, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -23,6 +25,7 @@ function Register() {
   };
 
   return (
+    <div>
     <form onSubmit={handleSubmit(submitForm)} className="login_form">
       <div className="materialContainer">
         <div className="box">
@@ -68,6 +71,14 @@ function Register() {
         </div>
       </div>
     </form>
+    <WorldIDWidget
+      actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
+      signal="my_signal"
+      enableTelemetry
+      onSuccess={(verificationResponse) => console.log(verificationResponse)} // you'll actually want to pass the proof to the API or your smart contract
+      onError={(error) => console.error(error)}
+    />
+    </div>
   );
 }
 
