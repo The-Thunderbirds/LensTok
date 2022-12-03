@@ -134,6 +134,14 @@ function Navbar() {
           {console.log( "user", user)}
           {user ? (
             <>
+              {isLoggedIn ? (
+                <DisconnectWallet />
+              ) : (
+                <ConnectWallet />
+              )}
+              <button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</button>
+              <button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</button>
+
               <Tippy content="Messages" placement="bottom" theme="gradient">
                 <div className={styles.menu_action}>
                   <FaRegPaperPlane />
@@ -162,8 +170,6 @@ function Navbar() {
                 <ConnectWallet />
               )}
 
-              <button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</button>
-              <button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</button>
 
               <Menu items={MENU_ITEMS_1} onChange={handleMenuChange}>
                 <div>
