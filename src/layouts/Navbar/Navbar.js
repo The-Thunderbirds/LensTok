@@ -86,6 +86,9 @@ function Navbar() {
       case "optOut":
         dispatch(unsubscribe(walletProvider, account));
         break;
+      case "notif":
+        console.log(menuItem)
+        break;
       default:
         break;
     }
