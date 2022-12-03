@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
+import { Link } from "react-router-dom";
+
 import { useWalletProvider } from "~/context/WalletProvider";
 import { useApolloProvider } from "~/context/ApolloContext";
 
@@ -165,10 +167,18 @@ function Short({ short, shortContainerRef }) {
             <div className="description">{short?.metadata?.description}</div>
             <div className="user-info">
               <div>
-                <img src={short?.profile?.picture?.original?.url} alt="" />
+                <Link
+                  to={"@" + short.profile.handle}
+                >
+                  <img src={short?.profile?.picture?.original?.url} alt="" />
+                </Link>
                 <span>
                   <div>
-                    {short?.profile?.handle}
+                    <Link
+                      to={"@" + short.profile.handle}
+                    >
+                      {short?.profile?.handle}
+                    </Link>
                   </div>
                   <div className="follower-count">
                     {short?.profile?.stats?.totalFollowers} followers
