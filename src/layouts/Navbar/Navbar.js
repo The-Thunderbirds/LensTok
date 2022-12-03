@@ -181,9 +181,6 @@ function Navbar() {
 
           { isLoggedIn && user &&(
             <>
-              {/* <Button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</Button>
-              <Button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</Button> */}
-
               <Tippy content="Messages" placement="bottom" theme="gradient">
                 <div className={styles.menu_action}>
                   <FaRegPaperPlane />

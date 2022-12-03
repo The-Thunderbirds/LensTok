@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Short from "./Short";
+import Loader from "~/components/Core/Loader";
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
@@ -9,15 +10,22 @@ function ShortContainer() {
   const { explorePublications } = useApolloProvider();
 
   const [publications, setPublications] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPublications();
   }, []);
 
   async function fetchPublications() {
+    setLoading(true);
     let response = await explorePublications();
     let items = response.data.explorePublications.items;
     setPublications(items);
+    setLoading(false);
+  }
+
+  if (loading) {
+    return <Loader />;
   }
 
   return (
