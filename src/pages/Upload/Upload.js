@@ -318,29 +318,38 @@ function Upload() {
                 disabled={!file || lpLoading || ipfsLoading || lensLoading || pushLoading}
                 className={styles.post}
                 type="submit"
-              >
+                rightIcon = 
+                  {lpLoading ? 
+                    <img src={Livepeer} style={{width:"32px", paddingLeft:"5px"}}/>
+                    : 
+                    ipfsLoading ?
+                    <img src={IPFS} style={{width:"32px", paddingLeft:"5px"}}/>
+                    :
+                    lensLoading ?
+                    <img src={lens} style={{width:"32px", paddingLeft:"5px"}}/>
+                    :
+                    pushLoading ?
+                    <img src={Push} style={{width:"32px", paddingLeft:"5px"}}/>
+                    : <></>
+                  }>
                 {lpLoading ? 
                 <>
                 Uploading on
-                <img src={Livepeer} width={"20px"}/>
                 </>
                 : 
                 ipfsLoading ?
                 <>
                 Uploading on 
-                <img src={IPFS} width={"20px"}/>
                 </>
                 :
                 lensLoading ?
                 <>
                 Uploading on 
-                <img src={lens} width={"20px"}/>
                 </>
                 :
                 pushLoading ?
                 <>
                 Notifying via 
-                <img src={Push} width={"25px"}/>
                 </>
                 :
                 "Post"}

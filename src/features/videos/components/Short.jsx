@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 
 import { useWalletProvider } from "~/context/WalletProvider";
 import { useApolloProvider } from "~/context/ApolloContext";
+import Button from "~/components/Core/Button";
+import Modal from "~/components/Modal";
+import {ModalBody, ModalFooter, ModalHeader} from '~/components/Modal/Modal';
+import { WorldIDWidget } from "@worldcoin/id";
 
 function Short({ short, shortContainerRef }) {
 
@@ -25,7 +29,7 @@ function Short({ short, shortContainerRef }) {
   const [followedByMe, setFollowedByMe] = useState(false);
 
   const [videoUrl, setVideoUrl] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     const video = short.metadata.media[0].original.url;
     setVideoUrl(video);
@@ -107,23 +111,49 @@ function Short({ short, shortContainerRef }) {
 		await collectWithSig(typedData);
 	}
 
+  function handleCollect(){
+    setShowModal(true);
+  }
   return (
     <div className="reel">
+      <div>
+        <Modal
+          show={showModal}
+          setShow={setShowModal}
+          // hideCloseButton
+        >
+          <ModalHeader>
+            <h2>Modal header</h2>
+          </ModalHeader>
+          <ModalBody>
+          <WorldIDWidget
+      actionId="wid_staging_a34231487061ca5d0213e57051c87f77" // obtain this from developer.worldcoin.org
+      signal="my_signal"
+      enableTelemetry
+      onSuccess={(verificationResponse) => console.log(verificationResponse)} // you'll actually want to pass the proof to the API or your smart contract
+      onError={(error) => console.error(error)}
+    />
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setShowModal(false)}>Close</Button>
+          </ModalFooter>
+        </Modal>
+      </div>
       <div className="reel-video">
         <div className="video">
           {/* <div className="video-con"> */}
           <video
             ref={videoRef}
             onClick={function (e) {
-              if(videoRef.current !== null) {
-              if (!isPlaying) {
-                videoRef.current.play();
-                setIsPlaying(true);
-              } else {
-                videoRef.current.pause();
-                setIsPlaying(false);
+              if (videoRef.current !== null) {
+                if (!isPlaying) {
+                  videoRef.current.play();
+                  setIsPlaying(true);
+                } else {
+                  videoRef.current.pause();
+                  setIsPlaying(false);
+                }
               }
-            }
             }}
             disableRemotePlayback
             playsInline
@@ -134,15 +164,15 @@ function Short({ short, shortContainerRef }) {
           <div className="controls">
             <span
               onClick={() => {
-                if(videoRef.current !== null) {
-                if (!isPlaying ) {
-                  videoRef.current.play();
-                  setIsPlaying(true);
-                } else {
-                  videoRef.current.pause();
-                  setIsPlaying(false);
+                if (videoRef.current !== null) {
+                  if (!isPlaying) {
+                    videoRef.current.play();
+                    setIsPlaying(true);
+                  } else {
+                    videoRef.current.pause();
+                    setIsPlaying(false);
+                  }
                 }
-              }
               }}
             >
               <ion-icon
@@ -151,10 +181,10 @@ function Short({ short, shortContainerRef }) {
             </span>
             <span
               onClick={() => {
-                if(videoRef.current !== null) {
-                videoRef.current.muted = !isMuted;
-                setIsMuted(!isMuted);
-              }
+                if (videoRef.current !== null) {
+                  videoRef.current.muted = !isMuted;
+                  setIsMuted(!isMuted);
+                }
               }}
             >
               <ion-icon
@@ -165,9 +195,9 @@ function Short({ short, shortContainerRef }) {
           <div
             ref={playPauseRef}
             onClick={() => {
-              if(videoRef.current !== null) {
-              videoRef.current.play();
-              setIsPlaying(true);
+              if (videoRef.current !== null) {
+                videoRef.current.play();
+                setIsPlaying(true);
               }
             }}
             className={`play-pause ${isPlaying ? "" : "show-play-pause"}`}
@@ -179,17 +209,12 @@ function Short({ short, shortContainerRef }) {
             <div className="description">{short?.metadata?.description}</div>
             <div className="user-info">
               <div>
-                <Link
-                  to={"@" + short.profile.handle}
-                >
+                <Link to={"@" + short.profile.handle}>
                   <img src={short?.profile?.picture?.original?.url} alt="" />
                 </Link>
                 <span>
-                  <div >
-                    <Link
-                      to={"@" + short.profile.handle}
-                      className="title"
-                    >
+                  <div>
+                    <Link to={"@" + short.profile.handle} className="title">
                       {short?.profile?.handle}
                     </Link>
                   </div>
@@ -198,10 +223,11 @@ function Short({ short, shortContainerRef }) {
                   </div>
                 </span>
               </div>
-              {followedByMe ? 
-                <button>Following</button> :
+              {followedByMe ? (
+                <button>Following</button>
+              ) : (
                 <button onClick={follow}>Follow</button>
-              }
+              )}
             </div>
           </div>
         </div>
@@ -228,7 +254,7 @@ function Short({ short, shortContainerRef }) {
             <span className="value">{short?.stats?.totalAmountOfComments}</span>
           </div>
           <div>
-            <ion-icon name="layers-outline" onClick={() => { if (window.confirm('Are you sure you wish to collect?')) collect() }}></ion-icon>
+            <ion-icon name="layers-outline" onClick={handleCollect}></ion-icon>
           </div>
           <div>
             <ion-icon name="ellipsis-vertical-outline"></ion-icon>
