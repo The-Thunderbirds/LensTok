@@ -32,14 +32,17 @@ import DisconnectWallet from "~/components/Wallet/DisconnectWallet";
 import { useWalletProvider } from '../../context/WalletProvider';
 import { useApolloProvider } from "~/context/ApolloContext"
 
+import { subscribe, unsubscribe } from "~/utils/pushNotifications";
+
 function Navbar() {
 
   const { apolloContext } = useApolloProvider();
   const { profiles, currentProfile } = apolloContext;
-  const { smartAccountAddress, connect, isLoggedIn, loading } = useWalletProvider();
+  const { smartAccountAddress, connect, isLoggedIn, loading, walletProvider, account } = useWalletProvider();
   
   const [user, setUser] = useState();
   // const { user } = useSelector((state) => state.user);
+  const [currUser, setCurrUser] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -154,11 +157,14 @@ function Navbar() {
           ) : (
             <>
               {isLoggedIn ? (
-                  <DisconnectWallet/>
+                <DisconnectWallet />
               ) : (
-                  <ConnectWallet/>
+                <ConnectWallet />
               )}
-              
+
+              <button onClick={() => { subscribe(walletProvider, account) }}>Opt In for Notifications</button>
+              <button onClick={() => { unsubscribe(walletProvider, account) }}>Opt Out for Notifications</button>
+
               <Menu items={MENU_ITEMS_1} onChange={handleMenuChange}>
                 <div>
                   <IoEllipsisVertical className={styles.dropdown_icon} />
