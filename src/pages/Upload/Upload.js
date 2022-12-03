@@ -7,15 +7,20 @@ import { v4 as uuidv4 } from "uuid";
 import { Web3Storage } from 'web3.storage'
 import axios from "axios";
 import Loader from "~/components/Core/Loader";
+import Livepeer from "~/assets/images/Livepeer.svg"
+import IPFS from "~/assets/images/ipfs.png"
+import lens from "~/assets/images/lens.svg"
+import Push from "~/assets/images/Bell.svg"
 
 import { useApolloProvider } from "~/context/ApolloContext";
 
+import { sendNotificationToAll } from "~/utils/pushNotifications"
 
 function Upload() {
   const { apolloContext, createPostTypedData, postWithSig } = useApolloProvider();
   const { profiles, currentProfile } = apolloContext;
   
-  const [loading, setLoading] = useState(false);
+  const [lpLoading, setLpLoading] = useState(false);
   const [filePreview, setFilePreview] = useState("");
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
@@ -23,9 +28,12 @@ function Upload() {
   const [videoURL, setVideoURL] = useState("");
   const [description, setDescription] = useState("");
   const { register, handleSubmit } = useForm();
+  const [ipfsLoading, setIpfsLoading] = useState(false);
+  const [lensLoading, setLensLoading] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
 
   const handleFile = (e) => {
-    // setLoading(true);
+    setLpLoading(true);
     const src = URL.createObjectURL(e.target.files[0]);
     setFilePreview(src);
     setFile(e.target.files[0]);
@@ -88,12 +96,19 @@ function Upload() {
       console.log(result.videoFileGatewayUrl);
       setVideoURL(result.videoFileGatewayUrl);
 
-      // setLoading(false);
+      setLpLoading(false);
     }
   };
 
   const handleUploadVideo = async () => {
-    await handlePost();
+    await handlePost();    
+
+    setPushLoading(true);
+    const title = "New Video : " + name;
+    const body = "Checkout the new video!"
+    await sendNotificationToAll(title, body);
+    setPushLoading(false);
+    window.alert("Upload has been completed succesfully");
   };
 
   const submitForm = (data) => {
@@ -102,10 +117,13 @@ function Upload() {
 
   const handlePost = async () => {
     
+    setIpfsLoading(true);
     const files = makeFileObjects();
     const ipfsResult = await storeFiles(files);
     console.log(ipfsResult);
+    setIpfsLoading(false);
 
+    setLensLoading(true);
     const createPostRequest = {
       profileId: profiles[currentProfile].id,
       contentURI: `https://${ipfsResult}.ipfs.w3s.link/metadata.json`,
@@ -126,6 +144,7 @@ function Upload() {
     console.log(result);
 
     await postWithSig(result.data.createPostTypedData.typedData);
+    setLensLoading(false);
   }
 
   function makeFileObjects() {
@@ -166,10 +185,6 @@ function Upload() {
     const cid = await client.put(files)
     console.log('stored files with cid:', cid)
     return cid
-  }
-
-  if (loading) {
-    return <Loader />;
   }
 
   return (
@@ -237,7 +252,6 @@ function Upload() {
               required
               type="file"
               accept="video/*"
-              // {...register("upload_file")}
             />
           </div>
           <div className={styles.upload_content_right}>
@@ -253,7 +267,6 @@ function Upload() {
                   maxLength={20}
                   name="name"
                   id="description"
-                  {...register("name")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={styles.form_input}
@@ -272,43 +285,12 @@ function Upload() {
                   maxLength={150}
                   name="description"
                   id="description"
-                  {...register("description")}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className={styles.form_textarea}
                 />
               </div>
             </div>
-            {/* <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Cover</span>
-              </div>
-              <div className={styles.form_footer}>
-                <input
-                  className={styles.form_input}
-                  name="thumbnail_time"
-                  id="thumbnail_time"
-                  {...register("thumbnail_time")}
-                  type="number"
-                  placeholder="Thumbnail capture position, units of seconds (Ex: 2)"
-                />
-              </div>
-            </div>
-            <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Music</span>
-              </div>
-              <div className={styles.form_footer}>
-                <input
-                  className={styles.form_input}
-                  name="music"
-                  id="music"
-                  {...register("music")}
-                  type="text"
-                  placeholder="Music"
-                />
-              </div>
-            </div> */}
             <div className={styles.form_item}>
               <div className={styles.form_header}>
                 <span className={styles.form_label}>
@@ -320,7 +302,6 @@ function Upload() {
                   className={styles.form_select}
                   name="viewable"
                   id="viewable"
-                  {...register("viewable")}
                 >
                   <option value="public">Public</option>
                   <option value="friends">Friends</option>
@@ -328,54 +309,41 @@ function Upload() {
                 </select>
               </div>
             </div>
-            {/* <div className={styles.form_item}>
-              <div className={styles.form_header}>
-                <span className={styles.form_label}>Allow users to:</span>
-              </div>
-              <div className={styles.form_footer}>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="comment"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Comment</label>
-                </div>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="duet"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Duet</label>
-                </div>
-                <div className={styles.form_checkbox}>
-                  <input
-                    value="stitch"
-                    type="checkbox"
-                    name="allows"
-                    id="allows"
-                    {...register("allows")}
-                  />
-                  <label htmlFor="">Stitch</label>
-                </div>
-              </div>
-            </div> */}
             <div className={styles.button_container}>
               <Button text className={styles.discard}>
                 Discard
               </Button>
               <Button
                 primary
-                disabled={!file}
+                disabled={!file || lpLoading || ipfsLoading || lensLoading || pushLoading}
                 className={styles.post}
                 type="submit"
               >
-                Post
+                {lpLoading ? 
+                <>
+                Uploading on
+                <img src={Livepeer} width={"20px"}/>
+                </>
+                : 
+                ipfsLoading ?
+                <>
+                Uploading on 
+                <img src={IPFS} width={"20px"}/>
+                </>
+                :
+                lensLoading ?
+                <>
+                Uploading on 
+                <img src={lens} width={"20px"}/>
+                </>
+                :
+                pushLoading ?
+                <>
+                Notifying via 
+                <img src={Push} width={"25px"}/>
+                </>
+                :
+                "Post"}
               </Button>
             </div>
           </div>

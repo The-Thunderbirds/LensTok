@@ -186,6 +186,8 @@
         grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
 
         .video_container {
+          margin-bottom: 20px;
+
           video {
             border-radius: 4px;
             width: 196px;
@@ -199,7 +201,7 @@
           }
 
           .video_desc {
-            font-weight: 400;
+            margin: 2px;
             padding: 2px 4px 0px;
             height: 28px;
             overflow: hidden;

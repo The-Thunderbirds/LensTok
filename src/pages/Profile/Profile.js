@@ -22,38 +22,30 @@ function Profile() {
   const nickname = params.nickname;
 
   const { getProfile, getPublications } = useApolloProvider();
+  //combine user and loading state 
+  const [profile, setProfile] = useState({ user: null, loading: true, myVideos:[] });
 
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  const [myVideos, setMyVideos] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
-      setLoading(true);
-      const result = await getProfile(nickname);
-      console.log(result);
-      setUser(result.data.profile);
-      setLoading(false);
+      // setProfile({ user:null, loading: true, myVideos:[] });
+      const profiles = await getProfile(nickname);
+      const user = profiles.data.profile;
+      const publications = await getPublications(user.id);
+      const myVideos = publications.data.publications.items;
+      console.log(profiles);
+      console.log(user);
+      console.log(publications);
+      console.log(myVideos);
+      setProfile({ user, loading: false, myVideos });
     }
 
     fetchUser();
   }, [nickname])
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      setLoading(true);
-      const result = await getPublications(user.id);
-      console.log(result);
-      setMyVideos(result.data.publications.items);
-      setLoading(false);
-    }
-
-    fetchUser();
-  }, [user])
-
 
   const handleVideoPlay = (e) => {
+    console.log("PLAY")
     e.target.play();
   };
 
@@ -67,7 +59,7 @@ function Profile() {
     // setUser((user) => ({ ...user, is_followed: isFollowed }));
   };
 
-  if (loading) {
+  if (profile.loading) {
     return <Loader />;
   }
 
@@ -76,17 +68,17 @@ function Profile() {
       <div className={styles.header}>
         <div className={styles.info}>
           <Image
-            src={user?.picture?.original?.url}
+            src={profile.user?.picture?.original?.url}
             width={116}
             height={116}
             className={styles.avatar}
           />
           <div className={styles.title_container}>
             <h2 className={styles.user_title}>
-              {user?.handle}
+              {profile.user?.handle}
             </h2>
-            <h4 className={styles.user_fullname}>{user?.name}</h4>
-            {/* {userRedux?.id !== user?.id ? (
+            <h4 className={styles.user_fullname}>{profile.user?.name}</h4>
+            {/* {userRedux?.id !== profile.user?.id ? (
               <WrapperAuth>
                 <div className={styles.button_container}>
                   {user.is_followed ? (
@@ -122,19 +114,19 @@ function Profile() {
         </div>
         <h2 className={styles.count_info}>
           <div className={styles.number_container}>
-            <strong>{user?.stats?.totalFollowing}</strong>
+            <strong>{profile.user?.stats?.totalFollowing}</strong>
             <span>Followings</span>
           </div>
           <div className={styles.number_container}>
-          <strong>{user?.stats?.totalFollowers}</strong>
+          <strong>{profile.user?.stats?.totalFollowers}</strong>
             <span>Followers</span>
           </div>
           <div className={styles.number_container}>
-            <strong>{user?.stats?.totalCollects}</strong>
+            <strong>{profile.user?.stats?.totalCollects}</strong>
             <span>Collects</span>
           </div>
         </h2>
-        <h2 className={styles.bio}>{user?.bio || "No bio yet."}</h2>
+        <h2 className={styles.bio}>{profile.user?.bio || "No bio yet."}</h2>
       </div>
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
@@ -143,37 +135,21 @@ function Profile() {
         </div>
         <div className={styles.list_video_container}>
           <div className={styles.list_video}>
-            {/* {myVideos && myVideos.map((video) => {
-              {console.log(video)}
-              <h1>{video?.metadata?.name}</h1>
-            })
-            } */}
-
-            {/* {user?.videos?.map((video) => (
-              <Link
-                key={video.id}
-                to={config.routes.videoLink(video)}
-                state={{
-                  videoDetail: true,
-                  video: video,
-                  prevPath: location.pathname,
-                }}
-              >
-                <div className={styles.video_container}>
+            {profile.myVideos && profile.myVideos.map((video) => (
+                <div key={video.id} className={styles.video_container}>
                   <video
-                    src={video.file_url}
+                    src= {video.metadata.media[0].original.url}
                     muted
                     loop
                     onMouseEnter={handleVideoPlay}
                     onMouseLeave={handleVideoPause}
-                    poster={video.thumb_url}
+                    poster = {video.metadata.media[0].original.url}
                   />
                   <div className={styles.video_desc}>
-                    <p>{video.description}</p>
+                    <p>{video.metadata.description}</p>
                   </div>
                 </div>
-              </Link>
-            ))} */}
+            ))}
           </div>
         </div>
       </div>
