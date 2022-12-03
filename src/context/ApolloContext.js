@@ -546,7 +546,8 @@ function ApolloContextProvider({ children }) {
         createCollectTypedData,
         collectWithSig,
         getFeed,
-        getCollectedPublications
+        getCollectedPublications,
+        login
       }}>
       {children}
     </ApolloContext.Provider>

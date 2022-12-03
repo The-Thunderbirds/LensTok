@@ -22,6 +22,7 @@ function Short({ short, shortContainerRef }) {
     doesFollow, 
     createCollectTypedData,
     collectWithSig,
+    login
   } = useApolloProvider();
 
   const playPauseRef = useRef();
@@ -61,7 +62,11 @@ function Short({ short, shortContainerRef }) {
   }, [shortContainerRef]);
 
   useEffect(() => {
-    checkIsFollowing();
+    async function fetchFollowingDetails () {
+      await login();
+      await checkIsFollowing();
+    }
+    fetchFollowingDetails();
   }, [isLoggedIn]);
 
   async function handleVideo() {
