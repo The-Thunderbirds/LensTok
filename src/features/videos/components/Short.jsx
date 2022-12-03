@@ -15,7 +15,7 @@ import { sendNotificationToOne } from "~/utils/pushNotifications"
 
 function Short({ short, shortContainerRef }) {
 
-  const { account } = useWalletProvider();
+  const { account, isLoggedIn } = useWalletProvider();
   const { 
     createFollowTypedData, 
     followWithSig, 
@@ -60,6 +60,10 @@ function Short({ short, shortContainerRef }) {
   }
   }, [shortContainerRef]);
 
+  useEffect(() => {
+    checkIsFollowing();
+  }, [isLoggedIn]);
+
   async function handleVideo() {
     if(videoRef.current !== null) {
     const videoTop = videoRef.current.getBoundingClientRect().top;
@@ -103,7 +107,7 @@ function Short({ short, shortContainerRef }) {
     let response = await doesFollow(followInfo);
     const following = response.data.doesFollow[0].follows;
     setFollowedByMe(following);
-    console.log(following);
+    // console.log(following);
     return following
   }
 
