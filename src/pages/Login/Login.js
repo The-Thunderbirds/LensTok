@@ -1,70 +1,59 @@
-import React from "react";
-import "./Login.scss";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { config } from "~/config";
-import { userLogin } from "~/features/authentication/userAction";
-import Error from "~/components/Core/Error";
-
+import React, { useEffect, useState } from "react";
+import './Login.scss';
 function Login() {
-  const { loading, user, error } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate(config.routes.home);
+  const [file , setFile] = useState('https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true');
+  const [lensHandle , setLensHandle] = useState('lenshandle');
+  const photoUpload = e =>{
+    e.preventDefault();
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    reader.onloadend = () => {
+      setFile(reader.result);
     }
-  }, [navigate, user]);
-
-  const submitForm = (data) => {
-    dispatch(userLogin(data));
-  };
-
+    reader.readAsDataURL(file);
+  }
+  const editName = e =>{
+    const name = e.target.value;
+    this.setState({
+      name,
+    });
+  }
+  
+  const handleSubmit= e =>{
+    e.preventDefault();
+    let activeP = this.state.active === 'edit' ? 'profile' : 'edit';
+    this.setState({
+      active: activeP,
+    })
+  }
   return (
-    <form onSubmit={handleSubmit(submitForm)} className="login_form">
-      <div className="materialContainer">
-        <div className="box">
-          <div className="title">LOGIN</div>
-          <div className="input">
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email"
-              {...register("email")}
-              required
-            />
-          </div>
-
-          <div className="input">
-            <input
-              type="password"
-              name="pass"
-              id="pass"
-              placeholder="Password"
-              {...register("password")}
-            />
-          </div>
-
-          {error && <Error>Wrong email or password</Error>}
-
-          <div className="button login">
-            <button type="submit" disabled={loading}>
-              <span>Login</span> <i className="fa fa-check"></i>
-            </button>
-          </div>
-
-          {/* <a href="#" className="pass-forgot">
-            Forgot your password?
-          </a> */}
-        </div>
-      </div>
+    
+    <div className="login-body">
+        <div className="card">
+    <form className="frm" onSubmit={handleSubmit}>
+      <h2>Create Profile</h2>
+      <label htmlFor="photo-upload" className="lbl custom-file-upload fas">
+    <div className="img-wrap img-upload" >
+      <img className="image" for="photo-upload" src={file}/>
+    </div>
+    <input className="inpt" id="photo-upload" type="file" onChange={photoUpload}/> 
+  </label>
+  <div className="field">
+    <label htmlFor="name">
+      Lens Handle:
+    </label>
+    <input className="inpt" 
+      id="name" 
+      type="text" 
+      onChange={editName} 
+      maxlength="25" 
+      placeholder="Your Lens Handle" 
+      required/>
+  </div>
+      <button type="submit" className="btn save">Create </button>
     </form>
+  </div>
+  </div>
   );
 }
-
 export default Login;

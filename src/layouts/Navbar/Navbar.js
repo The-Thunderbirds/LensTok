@@ -5,6 +5,7 @@ import {
   FaRegCommentAlt,
   FaPlus,
   FaRegMoon,
+  FaUserEdit,
 } from "react-icons/fa";
 import { BsSun } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
@@ -72,7 +73,17 @@ function Navbar() {
 
         <Search />
 
-        <div className={styles.navbar_right}>
+        <div className={styles.navbar_right}> 
+        <WrapperAuth>
+            <Button
+              className={styles.upload_icon}
+              text
+              leftIcon={<FaUserEdit/>}
+              to={config.routes.login}
+            >
+              Create Profile
+            </Button>
+          </WrapperAuth>
           <WrapperAuth>
             <Button
               className={styles.upload_icon}

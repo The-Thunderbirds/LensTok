@@ -1,214 +1,182 @@
-.login_form {
-  .box {
-    float: left;
-    padding: 60px 50px 40px 50px;
+.login-body{
+  display: flex;
+  justify-content: center;
+}
+
+.card{
+  width: 30%;
+  max-width: 500px;
+  height: 40%;
+  padding: 15px;
+  margin-top: 15vh;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 15px 10px 25px 0px  #3fa1a9;
+  background: #fff;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 120% -5%, 200% -40%;
+  background-size: 40%, 80%;
+  animation: open .5s;
+}
+@keyframes open {
+  0%  {background-position: 166% -25%, 220% -69%;}
+  100%{background-position: 120% -5%, 200% -40%;}
+}
+.frm{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.field{
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
   }
+.inpt[type="file"] {
+  display: none;
+}
 
-  .title {
-    width: 100%;
-    float: left;
-    line-height: 46px;
-    font-size: 34px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #ed2553;
-    position: relative;
+.custom-file-upload {
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  padding: 6px;
+  cursor: pointer;
+  background: linear-gradient(270deg, #3fa1a9, #79f1a4);
+  margin-bottom: 25px;
+}
 
-    &:before {
-      content: "";
-      width: 5px;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: -50px;
-      background: #ed2553;
-    }
-  }
+.img-wrap{
+  position: relative;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.img-upload:before{
+  content: url("./upload_image.png");
+  font-size: 90px;
+  position: absolute;
+  // padding-top: 80px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #63d3a6;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #ffffff;
+}
+.img-upload:hover:before{
+ opacity: 1;
+}
+.image {
+  width: auto;
+  height: 100%;
+}
 
-  .input {
-    width: 100%;
-    float: left;
+.lbl{
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #676767;
+}
 
-    label,
-    input {
-      width: 100%;
-      float: left;
-    }
-  }
+.inpt{
+  border-radius: 15px;
+  border: 1px solid #b7b7b7;
+  padding: 5px 5px 5px 10px;
+  font-size: 18px;
+  transition: 0.2s;
+}
+.inpt:focus{
+  outline: none;
+  border: 1px solid #64d488;
+}
+.inpt::placeholder{
+  color: #bebebe;
+}
+.name{ 
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #676767;
+  max-width: 220px;
+  overflow-wrap: break-word;
+}
+.status{
+  text-align: center;
+  max-width: 220px;
+  overflow-wrap: break-word;
+}
+.btn{
+  position: relative;
+  color: #054231;
+  letter-spacing: 1px;
+  margin: 20px;
+  font-size: 18px;
+  padding: 10px;
+  text-align: center;
+  transition: 0.5s;
+  // border-radius: 10px;
+  cursor: pointer;
+  border-radius: 25px;
+  border: none;
+  background: #64d488;
+}
+.save{
+  font-weight: 600;
+  left: -20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 20px 0px 40px 0px  #63d3a6;
+}
+.edit{
+  color: #fff;
+  width: 180px;
+}
+.btn:hover{
+  left: 0;
+  color: #fff;
+  width: 180px;
+  box-shadow: 0px 0px 20px 0px  #63d3a6;
+}
+.btn:focus{
+  outline: none;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
 
-  .button {
-    width: 100%;
-    float: left;
 
-    button {
-      width: 100%;
-      float: left;
-    }
-  }
-
-  .input,
-  .button {
-    margin-top: 30px;
-    height: 70px;
-  }
-
-  .input {
-    position: relative;
-
-    input {
-      position: relative;
-    }
-  }
-
-  .button {
-    position: relative;
-
-    button {
-      position: relative;
-    }
-  }
-
-  .input {
-    input {
-      padding-left: 10px;
-      height: 60px;
-      top: 10px;
-      border: none;
-      background: transparent;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 20px;
-      color: rgba(0, 0, 0, 0.8);
-    }
-
-    label {
-      font-family: "Roboto", sans-serif;
-      font-size: 24px;
-      color: rgba(0, 0, 0, 0.8);
-      font-weight: 300;
-    }
-  }
-
-  .button button {
-    font-family: "Roboto", sans-serif;
-    font-size: 24px;
-    color: rgba(0, 0, 0, 0.8);
-    font-weight: 300;
-  }
-
-  .input {
-    &:before {
-      width: 100%;
-      height: 1px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    &:before {
-      content: "";
-      background: rgba(0, 0, 0, 0.1);
-      z-index: 3;
-    }
-  }
-
-  .input label {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    z-index: 2;
-    cursor: pointer;
-    line-height: 60px;
-  }
-
-  .button {
-    &.login {
-      width: 60%;
-      left: 20%;
-
-      button {
-        width: 100%;
-        line-height: 64px;
-        left: 0%;
-        background-color: transparent;
-        border: 3px solid rgba(0, 0, 0, 0.1);
-        font-weight: 900;
-        font-size: 18px;
-        color: rgba(0, 0, 0, 0.2);
-      }
-    }
-
-    button {
-      width: 100%;
-      line-height: 64px;
-      left: 0%;
-      background-color: transparent;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      font-weight: 900;
-      font-size: 18px;
-      color: rgba(0, 0, 0, 0.2);
-    }
-
-    &.login {
-      margin-top: 30px;
-    }
-
-    margin-top: 20px;
-
-    button {
-      color: #ed2553;
-      border: none;
-    }
-
-    &.login button {
-      &.active {
-        border: 3px solid transparent;
-        color: #fff !important;
-
-        span {
-          opacity: 0;
-          transform: scale(0);
-        }
-      }
-
-      &:hover {
-        color: #ed2553;
-        border-color: #ed2553;
-      }
-    }
-
-    margin: 40px 0;
-    overflow: hidden;
-    z-index: 2;
-
-    button {
-      cursor: pointer;
-      position: relative;
-      z-index: 2;
-    }
-  }
-
-  // .pass-forgot {
-  //   width: 100%;
-  //   float: left;
-  //   text-align: center;
-  //   color: rgba(0, 0, 0, 0.4);
-  //   font-size: 18px;
-  //   position: absolute;
-  //   top: 100px;
-  //   right: 100px;
-  // }
-
-  .materialContainer {
-    max-width: 460px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  input {
-    &:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0 1000px #fff inset;
-    }
-  }
+.fa-instagram{
+  position: absolute;
+  color: #79f1a4;
+  top: 3%;
+  right: 2%;
+  font-size: 38px;
+}
+.fa-instagram:hover{
+  font-size: 42px;
+  color: #caff81;
+  transition: all .1s linear;
+  cursor: pointer;
 }
