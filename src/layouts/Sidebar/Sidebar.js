@@ -52,7 +52,7 @@ function Sidebar() {
             className={styles.facebook}
             href="https://github.com/The-Thunderbirds/LensTok"
           >
-            Team Thunderbirds: Github
+            Github
           </a>
         </div>
       </div>
