@@ -168,7 +168,7 @@ function Upload() {
         },
       ],
       animation_url: videoURL,
-      appId: "lenstok",
+      appId: "lenstokV2",
     };
 
     const blob = new Blob([JSON.stringify(pubMetadata)], { type: 'application/json' })
