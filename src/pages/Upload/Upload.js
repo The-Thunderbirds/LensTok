@@ -168,7 +168,7 @@ function Upload() {
         },
       ],
       animation_url: videoURL,
-      appId: "tiktok",
+      appId: "lenstok",
     };
 
     const blob = new Blob([JSON.stringify(pubMetadata)], { type: 'application/json' })

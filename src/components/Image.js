@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import Avatar from "~/assets/images/Avatar.jpeg";
-// import Tiktok from "~/assets/images/Tiktok2.png";
 import PropTypes from "prop-types";
 
 const Image = forwardRef(({ src, alt, width, height, ...props }, ref) => {

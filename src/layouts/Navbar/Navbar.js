@@ -12,8 +12,8 @@ import {
 } from "react-icons/fa";
 import { BsSun } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
-import Logo from "~/assets/images/logo.svg";
-import LogoDark from "~/assets/images/logo_dark.svg";
+import Logo from "~/assets/images/lenstok-green.png";
+import LogoDark from "~/assets/images/lenstok-green.png";
 import Bell from "~/assets/images/Bell.svg";
 
 import Tippy from "@tippyjs/react";
@@ -122,7 +122,7 @@ function Navbar() {
     <header className={styles.navbar}>
       <div className={styles.navbar_wrapper}>
         <Link to={config.routes.home} className={styles.logo}>
-          <img src={theme === "dark" ? LogoDark : Logo} alt="Tiktok" />
+          <img src={theme === "dark" ? LogoDark : Logo} alt="Lenstok" width="150px" style={{marginTop:"15px"}} />
         </Link>
 
         <Search />

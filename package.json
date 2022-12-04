@@ -1,12 +1,12 @@
 {
-  "name": "tiktok",
+  "name": "lenstok",
   "private": true,
   "version": "0.0.0",
-  "description": "Tiktok clone",
+  "description": "Lenstok clone",
   "main": "vite.config.js",
   "keywords": [
-    "tiktok",
-    "tiktok-clone"
+    "lenstok",
+    "lenstok-clone"
   ],
   "author": "Tran Huu Toan",
   "license": "ISC",

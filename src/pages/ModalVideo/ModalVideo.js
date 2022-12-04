@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { IoClose } from "react-icons/io5";
 import styles from "./ModalVideo.module.scss";
-import Tiktok2 from "~/assets/images/Tiktok2.png";
+import Lenstok from "~/assets/images/lenstok-green.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import Image from "~/components/Image";
 import VideoDetail from "~/features/videos/components/VideoDetail";
@@ -25,7 +25,7 @@ function ModalVideo() {
         className={styles.home_button}
         onClick={() => redirectModal(location, navigate)}
       >
-        <Image src={Tiktok2} />
+        <Image src={Lenstok} />
       </div>
     </CustomModal>
   );

@@ -245,7 +245,7 @@ function ApolloContextProvider({ children }) {
     let request = {
       profileId: id,
       publicationTypes: ["POST"],
-      sources: ["tiktok"]
+      sources: ["lenstok"]
     }
 
     return apolloClient.query({
@@ -260,7 +260,7 @@ function ApolloContextProvider({ children }) {
     let request = {
       collectedBy: account,
       publicationTypes: ["POST"],
-      sources: ["tiktok"]
+      sources: ["lenstok"]
     }
 
     return apolloClient.query({
@@ -370,7 +370,7 @@ function ApolloContextProvider({ children }) {
       query: gql(EXPLORE_PUBLICATIONS),
       variables: {
         request: {
-          sources: ["tiktok"],
+          sources: ["lenstok"],
           sortCriteria: "LATEST",
           publicationTypes: ["POST"],
         },
@@ -382,7 +382,7 @@ function ApolloContextProvider({ children }) {
   async function getFeed(id) {
     let request = {
       profileId: id,
-      sources: ["tiktok"]
+      sources: ["lenstok"]
     }
 
     const result = await apolloClient.query({
