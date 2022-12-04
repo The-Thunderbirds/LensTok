@@ -156,7 +156,18 @@ function Navbar() {
           </WrapperAuth>
           )
         }
-
+          {!isLoggedIn && (
+                    <Button className={styles.upload_icon} leftIcon={<FaWallet />}  onClick={connect}>
+                    {isLoggedIn && smartAccountAddress
+                      ? `${smartAccountAddress?.slice(0, 6)}...${smartAccountAddress?.slice(
+                          -6
+                        )}`
+                      : loading
+                      ? "Setting up..."
+                      : "Connect Wallet"}
+                  </Button>
+              )
+              }
           {theme === "dark" ? (
             <div
               className={styles.menu_action}

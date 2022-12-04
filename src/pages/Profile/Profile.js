@@ -15,6 +15,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { config } from "~/config";
 
 import { useApolloProvider } from "~/context/ApolloContext";
+import SuggestedList from "~/layouts/Sidebar/SuggestedList";
 
 function Profile() {
 
@@ -24,7 +25,7 @@ function Profile() {
   const { getProfile, getPublications, getCollectedPublications } = useApolloProvider();
   //combine user and loading state 
   const [profile, setProfile] = useState({ user: null, loading: true, myVideos:[], myCollections: [] });
-  const [viewCollected, setViewCollected] = useState(false);
+  const [view, setView] = useState("videos");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -133,12 +134,14 @@ function Profile() {
       </div>
       <div className={styles.list_video_wrapper}>
         <div className={styles.title_wrapper}>
-          <p className={styles.title} style = {{textDecoration: !viewCollected ? "underline" : "none"}} onClick = {() => setViewCollected(false)}>Videos</p>
-          <p className={styles.title} style = {{textDecoration: viewCollected ? "underline" : "none"}} onClick = {() => setViewCollected(true)}>Collected</p>
+          <p className={styles.title} style = {{textDecoration: view == "videos" ? "underline" : "none"}} onClick = {() => setView("videos")}>Videos</p>
+          <p className={styles.title} style = {{textDecoration: view == "collected" ? "underline" : "none"}} onClick = {() => setView("collected")}>Collected</p>
+          <p className={styles.title} style = {{textDecoration: view == "topFans" ? "underline" : "none"}} onClick = {() => setView("topFans")}> Top Fans</p>
+          <p className={styles.title} style = {{textDecoration: view == "topArtists" ? "underline" : "none"}} onClick = {() => setView("topArtists")}> Top Artists</p>
         </div>
         <div className={styles.list_video_container}>
           <div className={styles.list_video}>
-            {!viewCollected ? (
+            { view == "videos" && (
             profile.myVideos && profile.myVideos.map((video) => (
                 <div key={video.id} className={styles.video_container}>
                   <video
@@ -153,7 +156,8 @@ function Profile() {
                     <p>{video.metadata.description}</p>
                   </div>
                 </div>
-            ))) : 
+            ))) }
+            { view == "collected" && (
             profile.myCollections && profile.myCollections.map((video) => (
               <div key={video.id} className={styles.video_container}>
                 <video
@@ -168,7 +172,17 @@ function Profile() {
                   <p>{video.metadata.description}</p>
                 </div>
               </div>
-          ))
+          )))
+        }
+        {
+          view == "topFans" && (
+            <SuggestedList/>
+          )
+        }
+                {
+          view == "topArtists " && (
+            <SuggestedList/>
+          )
         }
           </div>
         </div>

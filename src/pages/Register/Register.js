@@ -5,7 +5,7 @@ function Register() {
   let roomId = "harsha-room";
   const iframeConfig = {
     roomUrl: `https://iframe.huddle01.com/${roomId}`,
-    height: "800px",
+    height: "100%",
     width: "100%",
     noBorder: true
   };
@@ -21,7 +21,7 @@ function Register() {
   }, []);
   
   return (    
-    <div>
+    <div style={{height:"100vh"}}>
       <HuddleIframe config={iframeConfig} />
     </div>
   );

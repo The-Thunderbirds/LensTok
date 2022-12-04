@@ -18,9 +18,8 @@ const Register = lazy(() => import("~/pages/Register"));
 // Public routes
 const publicRoutes = [
   { path: config.routes.home, component: Home },
-  { path: config.routes.live, component: Live },
   { path: config.routes.login, component: Login, layout: HeaderOnly },
-  { path: config.routes.register, component: Register, layout: HeaderOnly },
+  { path: config.routes.live, component: Register, layout: HeaderOnly },
   {
     path: config.routes.video,
     component: ModalVideo,

@@ -42,7 +42,7 @@ function Sidebar() {
           </>
         )}
 
-        {/* <SuggestedList /> */}
+        {isLoggedIn && <SuggestedList/>}
 
         {/* {user && <FollowingList />} */}
 

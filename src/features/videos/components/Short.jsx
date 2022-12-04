@@ -289,7 +289,6 @@ function Short({ short, shortContainerRef }) {
           </div>
           <div>
             <ion-icon name="chatbubble-outline"></ion-icon>
-            <span className="value">{short?.stats?.totalAmountOfComments}</span>
           </div>
           <div>
             <ion-icon name="layers-outline" onClick={handleCollect}></ion-icon>

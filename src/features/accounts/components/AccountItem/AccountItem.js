@@ -12,22 +12,18 @@ function AccountItem({ user, onClick }) {
     <div onClick={onClick}>
       {user && (
         <Link
-          to={config.routes.profileLink(user.nickname)}
+          to={config.routes.profileLink(user.handle)}
           className={styles.account_item}
         >
           <Image
             className={styles.account_item_avatar}
-            src={user.avatar}
-            alt={user.full_name}
+            src={user?.avatar}
           />
           <div className={styles.account_item_info}>
             <div className={styles.account_item_username}>
-              <span>{user.nickname}</span>
-              {user.tick && (
-                <Image className={styles.verify_author} src={Verify} alt="" />
-              )}
+              <span>{user.handle}</span>
+
             </div>
-            <div className={styles.account_item_name}>{getFullName(user)}</div>
           </div>
         </Link>
       )}
